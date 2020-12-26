@@ -10,7 +10,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:fit.helloWorld"
+		"*"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -18,6 +18,10 @@
 			{
 				"command": "fit.helloWorld",
 				"title": "Hello World"
+			},
+			{
+				"command": "fit.goodBye",
+				"title": "Good Bye"
 			}
 		]
 	},

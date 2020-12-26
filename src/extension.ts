@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import { sayBye } from './usecase/sayBye';
 import { sayHello } from './usecase/sayHello';
+import { StringVSCodeIO } from "./IO/StringVSCodeIO";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -15,9 +16,10 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
+	const io = new StringVSCodeIO();
 	const handlers = [
-		vscode.commands.registerCommand('fit.helloWorld', sayHello),
-		vscode.commands.registerCommand('fit.goodBye', sayBye)
+		vscode.commands.registerCommand('fit.helloWorld', () => sayHello(io)),
+		vscode.commands.registerCommand('fit.goodBye', () => sayBye(io))
 	];
 
 	handlers.forEach((handler, i, handlers) => {

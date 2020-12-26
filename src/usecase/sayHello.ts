@@ -1,5 +1,5 @@
-import * as vscode from 'vscode';
+import { IStringIO } from '../IOInterface/IStringIO';
 
-export const sayHello = () => {
-    vscode.window.showInformationMessage('Hello fit!');
+export const sayHello = async (io: IStringIO) => {
+    await io.output("hello");
 }

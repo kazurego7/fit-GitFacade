@@ -1,7 +1,7 @@
-import { IStringIO } from "../IOInterface/IStringIO";
+import { IInOut } from "../IOInterface/IInOut";
 import * as vscode from 'vscode';
 
-export class StringVSCodeIO implements IStringIO {
+export class VSCodeIO implements IInOut {
     async input(): Promise<string> {
         const text = await vscode.window.showInputBox();
         if (text === undefined) {

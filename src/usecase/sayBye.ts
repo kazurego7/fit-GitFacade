@@ -1,6 +1,6 @@
-import { IStringIO } from "../IOInterface/IStringIO";
+import { IInOut } from "../IOInterface/IInOut";
 
-export const sayBye = async (io: IStringIO) => {
+export const sayBye = async (io: IInOut) => {
     try {
         io.output("prease say bye.");
         const word = await io.input();

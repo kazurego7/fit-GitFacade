@@ -1,7 +1,7 @@
-import { IInOut } from "../IOInterface/IInOut";
+import { ICommonIO } from "../IOInterface/ICommonIO";
 import * as vscode from 'vscode';
 
-export class VSCodeIO implements IInOut {
+export class VSCodeIO implements ICommonIO {
     async input(): Promise<string> {
         const text = await vscode.window.showInputBox();
         if (text === undefined) {

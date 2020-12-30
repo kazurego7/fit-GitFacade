@@ -1,6 +1,6 @@
-import { IInOut } from "../IOInterface/IInOut";
+import { ICommonIO } from "../IOInterface/ICommonIO";
 
-export const sayBye = async (io: IInOut) => {
+export const sayBye = async (io: ICommonIO) => {
     try {
         io.output("prease say bye.");
         const word = await io.input();

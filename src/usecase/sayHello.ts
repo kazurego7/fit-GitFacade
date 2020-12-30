@@ -1,5 +1,5 @@
-import { IInOut } from '../IOInterface/IInOut';
+import { ICommonIO } from '../IOInterface/ICommonIO';
 
-export const sayHello = async (io: IInOut) => {
+export const sayHello = async (io: ICommonIO) => {
     await io.output("hello");
 }

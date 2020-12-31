@@ -16,6 +16,10 @@
 	"contributes": {
 		"commands": [
 			{
+				"command": "fit.setup",
+				"title": "Fit: Setup Git Management"
+			},
+			{
 				"command": "fit.helloWorld",
 				"title": "Hello World"
 			},

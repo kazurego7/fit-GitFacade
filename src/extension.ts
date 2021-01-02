@@ -1,50 +1,54 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { sayBye } from './usecase/sayBye';
 import { setup } from './usecase/Setup';
 import { VSCodeIO } from "./IO/VSCodeIO";
 import simpleGit from 'simple-git';
-import { sayHello } from './usecase/sayHello';
+import { ICommonIO } from './IOInterface/ICommonIO';
+import * as path from 'path';
+import { GitExtension } from './api/git';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	// choose git repository in workspace.
+
+	const io: ICommonIO = new VSCodeIO();
+
+
+	// TODO: ワークスペースにGit管理されたディレクトリが1つもないとき、コマンドパレットに表示しないようにする
+	// ワークスペースから、Gitのリポジトリを1つ選ばせる
 	const chooseGit = async () => {
-		const workspaceFolders = vscode.workspace.workspaceFolders;
-		if (workspaceFolders === undefined) {
-			return Promise.reject("folder is not found.");
+		const gitApi = vscode.extensions.getExtension<GitExtension>('vscode.git')?.exports?.getAPI(1);
+		if (gitApi === undefined) {
+			throw new Error("git api is not available.");
 		} else {
-			const gitDirs = workspaceFolders
-				.map((folder) => {
-					return { git: simpleGit(folder.uri.path), dir: folder.name };
+			const choices = await Promise.all(
+				gitApi.repositories.map(async (repo) => {
+					const git = simpleGit(repo.rootUri.path);
+					const rootPath = await git.revparse(['--show-toplevel']);
+					const rootDirName = path.basename(rootPath);
+					const branchName = await git.revparse(['--abbrev-ref', 'HEAD']);
+					return {
+						label: `${rootDirName}`,
+						description: `${branchName}`,
+						data: git
+					};
 				})
-				.filter((gitDir) => gitDir.git.checkIsRepo());
-			const pickItems: vscode.QuickPickItem[] = gitDirs.map((gitDir, i) => {
-				return {
-					label: `${gitDir.dir}`,
-					description: `${gitDir.git.revparse('--abbrev-ref HEAD')}`
-				};
-			});
-			const picked = await vscode.window.showQuickPick(pickItems);
-			const pickedIndex = pickItems
-				.map((item, i) => { return { item: item, index: i }; })
-				.filter((itemIx) => itemIx.item === picked)[0];
-			return gitDirs[pickedIndex.index].git;
+			);
+			if (choices.length < 1) {
+				throw new Error("git is not found");
+			} else {
+				return io.select(choices);
+			}
 		}
 	};
 
 	// command event
-	const io = new VSCodeIO();
 	const handlers = [
 		vscode.commands.registerCommand('fit.setup', () => {
 			chooseGit().then((git) => setup(io, git));
-		}),
-
-		vscode.commands.registerCommand('fit.helloWorld', () => sayHello(io)),
-		vscode.commands.registerCommand('fit.goodBye', () => sayBye(io))
+		})
 	];
 
 	handlers.forEach((handler, _i, _handlers) => {

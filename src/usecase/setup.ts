@@ -1,8 +1,8 @@
 import { SimpleGit } from 'simple-git';
-import { ICommonIO } from '../IOInterface/ICommonIO';
+import { ICommonIO } from '../ioInterface/commonIO';
 import * as path from 'path';
 import { promises as fs, Stats } from 'fs';
-import * as config from '../util/Config';
+import * as config from '../util/config';
 
 export const setup = async (io: ICommonIO, git: SimpleGit) => {
     // インデックスが空でなければ終了

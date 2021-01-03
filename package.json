@@ -17,7 +17,11 @@
 		"commands": [
 			{
 				"command": "fit.setup",
-				"title": "Fit: Setup Git Management"
+				"title": "Fit: Git管理の準備をする"
+			},
+			{
+				"command": "fit.feat",
+				"title": "Fit: feat ブランチを作成する"
 			}
 		]
 	},

@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { setup } from './usecase/setup';
+import { feat } from './usecase/feat';
 import { VSCodeIO } from "./ioImplement/vscodeIO";
 import simpleGit from 'simple-git';
 import { ICommonIO } from './ioInterface/commonIO';
@@ -48,6 +49,9 @@ export function activate(context: vscode.ExtensionContext) {
 	const handlers = [
 		vscode.commands.registerCommand('fit.setup', () => {
 			chooseGit().then((git) => setup(io, git));
+		}),
+		vscode.commands.registerCommand('fit.feat', () => {
+			chooseGit().then((git) => feat(io, git));
 		})
 	];
 

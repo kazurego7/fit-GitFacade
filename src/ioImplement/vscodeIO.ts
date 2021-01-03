@@ -1,4 +1,4 @@
-import { ICommonIO } from "../IOInterface/ICommonIO";
+import { ICommonIO } from "../ioInterface/commonIO";
 import * as vscode from 'vscode';
 import { assert } from "console";
 

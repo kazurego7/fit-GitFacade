@@ -1,10 +1,10 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { setup } from './usecase/Setup';
-import { VSCodeIO } from "./IO/VSCodeIO";
+import { setup } from './usecase/setup';
+import { VSCodeIO } from "./ioImplement/vscodeIO";
 import simpleGit from 'simple-git';
-import { ICommonIO } from './IOInterface/ICommonIO';
+import { ICommonIO } from './ioInterface/commonIO';
 import * as path from 'path';
 import { GitExtension } from './api/git';
 

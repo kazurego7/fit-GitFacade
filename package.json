@@ -21,7 +21,11 @@
 			},
 			{
 				"command": "fit.feat",
-				"title": "Fit: feat ブランチを作成する"
+				"title": "Fit: featブランチを作成する"
+			},
+			{
+				"command": "fit.swing",
+				"title": "Fit: 作業を保存してブランチを切り替える"
 			}
 		]
 	},

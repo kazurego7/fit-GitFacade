@@ -11,7 +11,7 @@ export class VSCodeIO implements ICommonIO {
             return text;
         }
     }
-    async select<T>(choices: { label: string; description: string; data: T; }[]): Promise<T> {
+    async select<T>(choices: { label: string; description?: string; data: T; }[]): Promise<T> {
         assert(choices.length > 0);
         const picked = await vscode.window.showQuickPick(choices, { ignoreFocusOut: true });
         if (picked === undefined) {

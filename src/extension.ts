@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import { setup } from './usecase/setup';
 import { feat } from './usecase/feat';
+import { swing } from './usecase/swing';
 import { VSCodeIO } from "./ioImplement/vscodeIO";
 import simpleGit from 'simple-git';
 import { ICommonIO } from './ioInterface/commonIO';
@@ -52,6 +53,9 @@ export function activate(context: vscode.ExtensionContext) {
 		}),
 		vscode.commands.registerCommand('fit.feat', () => {
 			chooseGit().then((git) => feat(io, git));
+		}),
+		vscode.commands.registerCommand('fit.swing', () => {
+			chooseGit().then((git) => swing(io, git));
 		})
 	];
 

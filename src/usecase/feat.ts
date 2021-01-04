@@ -1,6 +1,6 @@
 import { SimpleGit } from "simple-git";
 import { ICommonIO } from '../ioInterface/commonIO';
-import { swing } from "../service/common";
+import * as service from "../service/common";
 import * as config from '../util/config';
 
 export const feat = async (io: ICommonIO, git: SimpleGit) => {
@@ -23,8 +23,8 @@ export const feat = async (io: ICommonIO, git: SimpleGit) => {
         await git.checkout([newBranchName]);
         await git.commit(commitMassage, ['--allow-empty']);
     } else {
-        await swing(git, newBranchName);
+        await service.swing(git, newBranchName);
         await git.commit(commitMassage, ['--allow-empty']);
-        await swing(git, currentBranchName);
+        await service.swing(git, currentBranchName);
     }
 };

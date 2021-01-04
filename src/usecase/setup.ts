@@ -4,6 +4,7 @@ import * as path from 'path';
 import { promises as fs, Stats } from 'fs';
 import * as config from '../util/config';
 
+// fitでのgit管理のため準備をする
 export const setup = async (io: ICommonIO, git: SimpleGit) => {
     // インデックスが空でなければ終了
     const stagingFileSplited = (await git.diff(['--name-only', '--cached'])).trimRight().split('\n');

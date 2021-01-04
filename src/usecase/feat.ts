@@ -13,5 +13,10 @@ export const feat = async (io: ICommonIO, git: SimpleGit) => {
     }
     const userNameValidated = userName.replace(' ', '-');
     const branchTitle = await io.input(`ブランチのタイトルを入力してください。ブランチ名は${userNameValidated}_feat_"タイトル"となります。`);
-    await git.branch([`${userNameValidated}_feat_${branchTitle}`, config.BRANCH_NAME_MAIN]);
+    const newBranchName = `${userNameValidated}_feat_${branchTitle}`;
+    await git.branch([newBranchName, config.BRANCH_NAME_MAIN]);
+    const currentBranchName = (await git.branch()).current;
+    if (currentBranchName === config.BRANCH_NAME_MAIN) {
+        await git.checkout([newBranchName]);
+    }
 };

@@ -22,7 +22,7 @@
 			},
 			{
 				"command": "fit.feat",
-				"title": "featブランチを作成する",
+				"title": "featureブランチを作成する",
 				"category": "Fit"
 			},
 			{

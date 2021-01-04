@@ -4,7 +4,26 @@ import * as path from 'path';
 import { promises as fs, Stats } from 'fs';
 import * as config from '../util/config';
 
+// fitでのgit管理のため準備をする
 export const setup = async (io: ICommonIO, git: SimpleGit) => {
+    // リモートリポジトリへの登録(既に登録済みの場合はスキップ)
+    const hasAddRemote = (await git.getRemotes())
+        .some((remote) => remote.name === 'origin');
+    let remoteURL = '';
+    if (!hasAddRemote) {
+        remoteURL = await io.input('リモートリポジトリのURLを入力。指定しない場合は空白のまま。');
+        if (remoteURL !== '') {
+            await git.listRemote([`${remoteURL}`]);
+            await git.addRemote('origin', remoteURL);
+        }
+    }
+
+    // first commit がなければ、空のコミットを行う
+    const isNothingCommit = (await git.branch()).all.length === 0;
+    if (isNothingCommit) {
+        await git.commit(`${config.COMMIT_MSG_AUTO} first commit.`, ['--allow-empty']);
+    }
+
     // インデックスが空でなければ終了
     const stagingFileSplited = (await git.diff(['--name-only', '--cached'])).trimRight().split('\n');
     let stagingFiles = [];
@@ -16,15 +35,11 @@ export const setup = async (io: ICommonIO, git: SimpleGit) => {
     }
 
     // デフォルトのブランチ名を変更(既に変更済みの場合はスキップ)
-    try {
-        await git.revparse(['--verify', `refs/heads/${config.BRANCH_NAME_DEFAULT}`]);
-        try {
-            await git.revparse(['--verify', config.BRANCH_NAME_MAIN]);
-            throw new Error(`Both ${config.BRANCH_NAME_DEFAULT} and ${config.BRANCH_NAME_MAIN} branches exist.`);
-        } catch {
-            await git.branch(['--move', config.BRANCH_NAME_DEFAULT, config.BRANCH_NAME_MAIN]);
-        }
-    } catch { }
+    const branchList = await git.branch();
+    const existsBranch = (branchName: string) => branchList.all.some((name) => branchName === name);
+    if (existsBranch(config.BRANCH_NAME_DEFAULT) && !existsBranch(config.BRANCH_NAME_MAIN)) {
+        await git.branch(['--move', config.BRANCH_NAME_DEFAULT, config.BRANCH_NAME_MAIN]);
+    }
 
     // テンプレートの.gitignoreをルートディレクトリ直下に追加しコミットする(.gitignoreが既に存在すればスキップ)
     const rootDirPath = await git.revparse(['--show-toplevel']);
@@ -52,17 +67,5 @@ export const setup = async (io: ICommonIO, git: SimpleGit) => {
             await git.branch([config.BRANCH_NAME_PRODUCTION, firstCommitId]);
         }
         await git.checkout(config.BRANCH_NAME_MAIN);
-    }
-
-    // リモートリポジトリへの登録(既に登録済みの場合はスキップ)
-    const hasAddRemote = (await git.getRemotes())
-        .some((remote) => remote.name === 'origin');
-    let remoteURL = '';
-    if (!hasAddRemote) {
-        remoteURL = await io.input('リモートリポジトリのURLを入力。指定しない場合は空白のまま。');
-        if (remoteURL !== '') {
-            await git.listRemote([`${remoteURL}`]);
-            await git.addRemote('origin', remoteURL);
-        }
     }
 };

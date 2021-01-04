@@ -10,6 +10,7 @@ import simpleGit from 'simple-git';
 import { ICommonIO } from './ioInterface/commonIO';
 import * as path from 'path';
 import { GitExtension } from './api/git';
+import * as config from './util/config';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -31,7 +32,10 @@ export function activate(context: vscode.ExtensionContext) {
 					const git = simpleGit(repo.rootUri.path);
 					const rootPath = await git.revparse(['--show-toplevel']);
 					const rootDirName = path.basename(rootPath);
-					const branchName = await git.revparse(['--abbrev-ref', 'HEAD']);
+					let branchName = (await (git.branch())).current;
+					if (branchName === '') {
+						branchName = config.BRANCH_NAME_DEFAULT;
+					}
 					return {
 						label: `${rootDirName}`,
 						description: `${branchName}`,

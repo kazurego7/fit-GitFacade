@@ -3,6 +3,7 @@ import { ICommonIO } from '../ioInterface/commonIO';
 import * as config from '../util/config';
 import * as service from '../service/common';
 
+// 現在のワークツリーとインデックスのまま、新しいfeatブランチへ移動する
 export const replant = async (io: ICommonIO, git: SimpleGit) => {
     // 新しいブランチの名前を決定する
     const userName = await service.getUserName(git);
@@ -12,10 +13,9 @@ export const replant = async (io: ICommonIO, git: SimpleGit) => {
     await git.stash(['push', '--include-untracked', '--message', 'replant']);
     try {
         const newBranchName = await service.createFeatBranchName(git, userName, branchTitle);
-        await service.createFeatBranch(git, newBranchName);
-        await git.checkout(newBranchName);
-        await git.stash(['pop', '--index']);
+        await service.feat(git, newBranchName);
     } catch {
+    } finally {
         await git.stash(['pop', '--index']);
     }
 };

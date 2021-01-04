@@ -6,7 +6,11 @@ import * as config from '../util/config';
 
 export const setup = async (io: ICommonIO, git: SimpleGit) => {
     // インデックスが空でなければ終了
-    const stagingFiles = (await git.diff(['--name-only', '--cached'])).trimRight().split('\n');
+    const stagingFileSplited = (await git.diff(['--name-only', '--cached'])).trimRight().split('\n');
+    let stagingFiles = [];
+    if (stagingFileSplited[0] !== '') {
+        stagingFiles = stagingFileSplited;
+    }
     if (stagingFiles.length > 0) {
         throw new Error('index is not empty.');
     }

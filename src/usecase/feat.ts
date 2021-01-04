@@ -4,7 +4,7 @@ import * as service from "../service/common";
 import * as config from '../util/config';
 
 
-// feat ブランチの作成
+// featureブランチを作成する。メインブランチにチェックアウトしている場合は、作成したfeatureブランチに移動する。
 export const feat = async (io: ICommonIO, git: SimpleGit) => {
     // ブランチ名の取得
     const userNameOneOrArray = (await git.listConfig()).all['user.name'];

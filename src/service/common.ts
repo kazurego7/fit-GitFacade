@@ -58,4 +58,49 @@ export const swing = async (git: SimpleGit, afterBranchName: string) => {
         await git.checkout(beforeBranchName);
         throw new Error('swing cancel.');
     }
-}
+};
+
+// ユーザー名を取得する(空白はハイフン[-]に置き換える)
+export const getUserName = async (git: SimpleGit) => {
+    const userNameOneOrArray = (await git.listConfig()).all['user.name'];
+    let userName = '';
+    if (Array.isArray(userNameOneOrArray)) {
+        userName = userNameOneOrArray[0];
+    } else {
+        userName = userNameOneOrArray;
+    }
+    const userNameValidated = userName.replace(' ', '-');
+    return userNameValidated;
+};
+
+// ブランチタイトルとユーザー名からfeatブランチ名を作成する(既存のブランチと重複する場合はエラー)
+export const createFeatBranchName = async (git: SimpleGit, userName: string, branchTitle: string) => {
+    const branchName = `${userName}_feat_${branchTitle}`;
+    const branchNameList = (await git.branch()).all;
+    const isDuplicated = branchNameList.some((name) => name === branchName);
+    if (isDuplicated) {
+        throw new Error("branch name is duplicated.");
+    } else {
+        return branchName;
+    }
+};
+
+// feat ブランチの作成
+export const createFeatBranch = async (git: SimpleGit, newBranchName: string) => {
+    // feat ブランチの作成
+    await git.branch([newBranchName, config.BRANCH_NAME_MAIN]);
+
+    // feat ブランチ作成後、空のコミットを行う(swing-stashなどのため)
+    const currentBranchName = (await git.branch()).current;
+    const commitMassage = `${config.COMMIT_MSG_AUTO} create feature branch.`;
+    if (currentBranchName === config.BRANCH_NAME_MAIN) {
+        // メインブランチにチェックアウトしていれば、作成したfeatブランチにスイッチ
+        await git.checkout([newBranchName]);
+        await git.commit(commitMassage, ['--allow-empty']);
+    } else {
+        // メインブランチ以外にチェックアウトしていれば、元ブランチのまま
+        await swing(git, newBranchName);
+        await git.commit(commitMassage, ['--allow-empty']);
+        await swing(git, currentBranchName);
+    }
+};

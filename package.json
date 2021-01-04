@@ -29,6 +29,11 @@
 				"command": "fit.swing",
 				"title": "作業を保存してブランチを切り替える",
 				"category": "Fit"
+			},
+			{
+				"command": "fit.replant",
+				"title": "作業状態を保ったままブランチを切り替える",
+				"category": "Fit"
 			}
 		]
 	},

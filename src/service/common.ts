@@ -85,8 +85,8 @@ export const createFeatBranchName = async (git: SimpleGit, userName: string, bra
     }
 };
 
-// feat ブランチの作成
-export const createFeatBranch = async (git: SimpleGit, newBranchName: string) => {
+// feat ブランチの作成(空のコミット済み)
+export const feat = async (git: SimpleGit, newBranchName: string) => {
     // feat ブランチの作成
     await git.branch([newBranchName, config.BRANCH_NAME_MAIN]);
 

@@ -10,5 +10,5 @@ export const feat = async (io: ICommonIO, git: SimpleGit) => {
     const userName = await service.getUserName(git);
     const branchTitle = await io.input(`ブランチのタイトルを入力してください。ブランチ名は${userName}_feat_"タイトル"となります。`);
     const newBranchName = await service.createFeatBranchName(git, userName, branchTitle);
-    await service.createFeatBranch(git, newBranchName);
+    await service.feat(git, newBranchName);
 };

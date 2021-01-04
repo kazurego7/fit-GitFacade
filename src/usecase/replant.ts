@@ -12,7 +12,7 @@ export const replant = async (io: ICommonIO, git: SimpleGit) => {
     await git.stash(['push', '--include-untracked', '--message', 'replant']);
     try {
         const newBranchName = await service.createFeatBranchName(git, userName, branchTitle);
-        await service.createFeatBranch(git, newBranchName);
+        await service.feat(git, newBranchName);
         await git.checkout(newBranchName);
         await git.stash(['pop', '--index']);
     } catch {

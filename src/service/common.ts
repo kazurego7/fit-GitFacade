@@ -32,7 +32,8 @@ export const getStashRevByCommitId = async (git: SimpleGit, commitId: string) =>
     }
 };
 
-// 現在チェックアウトしているブランチの作業を保存し、別のブランチへ移動
+// 現在のワークツリーとインデックスを保存して、既存のブランチへスイッチする。
+// スイッチ先のブランチで、そのブランチで以前に保存したワークツリーとインデックスを復元する。
 export const swing = async (git: SimpleGit, afterBranchName: string) => {
     // 現在チェックアウトしているコミットに紐づくswing-stashのpush
     const beforeBranchName = (await git.branch()).current;

@@ -17,15 +17,18 @@
 		"commands": [
 			{
 				"command": "fit.setup",
-				"title": "Fit: Git管理の準備をする"
+				"title": "Git管理の準備をする",
+				"category": "Fit"
 			},
 			{
 				"command": "fit.feat",
-				"title": "Fit: featブランチを作成する"
+				"title": "featureブランチを作成する",
+				"category": "Fit"
 			},
 			{
 				"command": "fit.swing",
-				"title": "Fit: 作業を保存してブランチを切り替える"
+				"title": "作業を保存してブランチを切り替える",
+				"category": "Fit"
 			}
 		]
 	},

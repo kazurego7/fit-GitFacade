@@ -14,9 +14,8 @@ export const replant = async (io: ICommonIO, git: SimpleGit) => {
     try {
         const newBranchName = await service.createFeatBranchName(git, userName, branchTitle);
         await service.feat(git, newBranchName);
-        await git.checkout(newBranchName);
-        await git.stash(['pop', '--index']);
     } catch {
+    } finally {
         await git.stash(['pop', '--index']);
     }
 };

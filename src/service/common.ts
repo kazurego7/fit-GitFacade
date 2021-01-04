@@ -85,22 +85,11 @@ export const createFeatBranchName = async (git: SimpleGit, userName: string, bra
     }
 };
 
-// feat ブランチの作成(空のコミット済み)
+// feat ブランチ作成してswing後、空のコミットを行う
 export const feat = async (git: SimpleGit, newBranchName: string) => {
-    // feat ブランチの作成
     await git.branch([newBranchName, config.BRANCH_NAME_MAIN]);
-
-    // feat ブランチ作成後、空のコミットを行う(swing-stashなどのため)
     const currentBranchName = (await git.branch()).current;
     const commitMassage = `${config.COMMIT_MSG_AUTO} create feature branch.`;
-    if (currentBranchName === config.BRANCH_NAME_MAIN) {
-        // メインブランチにチェックアウトしていれば、作成したfeatブランチにスイッチ
-        await git.checkout([newBranchName]);
-        await git.commit(commitMassage, ['--allow-empty']);
-    } else {
-        // メインブランチ以外にチェックアウトしていれば、元ブランチのまま
-        await swing(git, newBranchName);
-        await git.commit(commitMassage, ['--allow-empty']);
-        await swing(git, currentBranchName);
-    }
+    await swing(git, newBranchName);
+    await git.commit(commitMassage, ['--allow-empty']);
 };

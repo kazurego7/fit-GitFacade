@@ -6,13 +6,13 @@ import * as service from '../service/common';
 // 現在のワークツリーとインデックスのまま、新しいfeatブランチへ移動する
 export const replant = async (io: ICommonIO, git: SimpleGit) => {
     // 新しいブランチの名前を決定する
-    const userName = await service.getUserName(git);
-    const branchTitle = await io.input(`移動先のブランチのタイトルを入力してください。ブランチ名は${userName}_feat_"タイトル"となります。`);
+    const newBranchNameNotice = await service.createFeatBranchName(git, '"タイトル"');
+    const branchTitle = await io.input(`移動先のブランチのタイトルを入力してください。ブランチ名は${newBranchNameNotice}となります。`);
 
     // 新しいブランチに、作業内容を移し替える
     await git.stash(['push', '--include-untracked', '--message', 'replant']);
     try {
-        const newBranchName = await service.createFeatBranchName(git, userName, branchTitle);
+        const newBranchName = await service.createFeatBranchNameValid(git, branchTitle);
         await service.feat(git, newBranchName);
     } catch {
     } finally {

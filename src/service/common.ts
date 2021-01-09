@@ -35,8 +35,13 @@ export const getStashRevByCommitId = async (git: SimpleGit, commitId: string) =>
 // 現在のワークツリーとインデックスを保存して、既存のブランチへスイッチする。
 // スイッチ先のブランチで、そのブランチで以前に保存したワークツリーとインデックスを復元する。
 export const swing = async (git: SimpleGit, afterBranchName: string) => {
-    // 現在チェックアウトしているコミットに紐づくswing-stashのpush
+    // swingの前と後のブランチが一緒ならばなにもしない
     const beforeBranchName = (await git.branch()).current;
+    if (beforeBranchName === afterBranchName) {
+        return;
+    }
+
+    // 現在チェックアウトしているコミットに紐づくswing-stashのpush
     const beforeCommitId = (await git.show(['--no-patch', '--format=%H'])).trim();
     await git.stash(['push', '--include-untracked', '--message', `swing ${beforeCommitId}`]);
 
@@ -87,9 +92,14 @@ export const createFeatBranchName = async (git: SimpleGit, userName: string, bra
 
 // feat ブランチ作成してswing後、空のコミットを行う
 export const feat = async (git: SimpleGit, newBranchName: string) => {
-    await git.branch([newBranchName, config.BRANCH_NAME_MAIN]);
-    const currentBranchName = (await git.branch()).current;
-    const commitMassage = `${config.COMMIT_MSG_AUTO} create feature branch.`;
     await swing(git, newBranchName);
-    await git.commit(commitMassage, ['--allow-empty']);
+    await git.branch([newBranchName]);
+    try {
+        await git.checkout([newBranchName]);
+        const commitMassage = `${config.COMMIT_MSG_AUTO} create feature branch.`;
+        await git.commit(commitMassage, ['--allow-empty']);
+    } catch {
+        await git.branch(['--delete', newBranchName]);
+        throw new Error('feat failed.');
+    }
 };

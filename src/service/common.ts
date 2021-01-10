@@ -112,3 +112,16 @@ export const feat = async (git: SimpleGit, newBranchName: string) => {
         throw new Error('feat failed.');
     }
 };
+
+// index に変更があるか
+export const isChangeForIndex = async (git: SimpleGit) => {
+    const index = await git.diff(['--cached', '--exit-code']);
+    return index !== "";
+};
+
+// workingtree に変更があるか
+export const isChangeForWorkingtree = async (git: SimpleGit) => {
+    const modifed = await git.diff(['--exit-code']);
+    const untracked = (await git.raw(['ls-files', '--other', '--exclude-standard', '--directory'])).trim();
+    return modifed !== "" && untracked !== "";
+};

@@ -5,6 +5,7 @@ import { setup } from './usecase/setup';
 import { feat } from './usecase/feat';
 import { swing } from './usecase/swing';
 import { replant } from './usecase/replant';
+import { follow } from './usecase/follow';
 import { VSCodeIO } from "./ioImplement/vscodeIO";
 import simpleGit from 'simple-git';
 import { ICommonIO } from './ioInterface/commonIO';
@@ -64,7 +65,10 @@ export function activate(context: vscode.ExtensionContext) {
 		}),
 		vscode.commands.registerCommand('fit.replant', () => {
 			chooseGit().then((git) => replant(io, git));
-		})
+		}),
+		vscode.commands.registerCommand('fit.follow', () => {
+			chooseGit().then((git) => follow(io, git));
+		}),
 	];
 
 	handlers.forEach((handler, _i, _handlers) => {

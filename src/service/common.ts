@@ -125,3 +125,22 @@ export const isChangeForWorkingtree = async (git: SimpleGit) => {
     const untracked = (await git.raw(['ls-files', '--other', '--exclude-standard', '--directory'])).trim();
     return modifed !== "" && untracked !== "";
 };
+
+/** 
+ * merge conflict 中か(conflict marker がなくてもコミットされていなければ、conflict 中)
+ * @param git gitクライアント
+ */
+export const isMergeConflict = async (git: SimpleGit) => {
+    const notMergedFileNames = await git.diff(['--name-only', '--diff-filter=U']);
+    return notMergedFileNames !== "";
+};
+
+/** 
+ * conflict marker のあるファイルが存在するか
+ * @param git gitクライアント
+ */
+export const existsConflictFile = async (git: SimpleGit) => {
+    // conflict marker または whitespace error が発生しているファイルから、conflict marker のあるファイルが存在するときのみ false
+    const errorLines = (await git.diff(['--check'])).split('\n');
+    return errorLines.some((line) => line.search('leftover conflict marker') !== -1);
+};

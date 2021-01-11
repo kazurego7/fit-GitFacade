@@ -3,6 +3,7 @@
 	"displayName": "fit",
 	"description": "fit is a mere git facade.",
 	"version": "0.0.1",
+	"publisher": "kazurego7",
 	"engines": {
 		"vscode": "^1.52.0"
 	},
@@ -71,5 +72,9 @@
 	},
 	"dependencies": {
 		"simple-git": "^2.31.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/kazurego7/fit-GitFacade"
 	}
 }

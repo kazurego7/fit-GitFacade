@@ -1,4 +1,4 @@
-import { SimpleGit } from "simple-git";
+import { SimpleGit, GitError } from "simple-git";
 import { ICommonIO } from '../ioInterface/commonIO';
 import * as config from '../util/config';
 
@@ -143,4 +143,37 @@ export const existsConflictFile = async (git: SimpleGit) => {
     // conflict marker または whitespace error が発生しているファイルから、conflict marker のあるファイルが存在するときのみ false
     const errorLines = (await git.diff(['--check'])).split('\n');
     return errorLines.some((line) => line.search('leftover conflict marker') !== -1);
+};
+
+/**
+ * merge の結果
+ */
+export enum MergeResult {
+    merged,
+    conflict
+};
+
+/** 
+ * no-fast-forward で merge を行う
+ * @param git gitクライアント
+ */
+export const merge = async (git: SimpleGit) => {
+    try {
+        await git.merge(['--no-ff', config.BRANCH_NAME_MAIN]);
+        return MergeResult.merged;
+    } catch (e) {
+        if (e instanceof GitError) {
+            const errorName = e.message.split(':').map((str) => str.trim())[0];
+            const isConflict = errorName === 'CONFLICTS';
+            if (!isConflict) {
+                // merge conflict 以外のエラーの場合はそのままエラー
+                throw e;
+            } else {
+                // conflict する場合は、conflict を返す
+                return MergeResult.conflict;
+            }
+        } else {
+            throw e;
+        }
+    }
 };

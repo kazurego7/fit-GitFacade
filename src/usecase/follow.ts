@@ -3,7 +3,11 @@ import { ICommonIO } from '../ioInterface/commonIO';
 import * as service from "../service/common";
 import * as config from '../util/config';
 
-// メインブランチのpullをし、現在のブランチにmergeする
+/**
+ * メインブランチのpullをし、現在のブランチにmergeする
+ * @param io 
+ * @param git 
+ */
 export const follow = async (io: ICommonIO, git: SimpleGit) => {
 
     // メインブランチの pull を行う

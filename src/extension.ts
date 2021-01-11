@@ -20,9 +20,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const io: ICommonIO = new VSCodeIO();
 
-
-	// TODO: ワークスペースにGit管理されたディレクトリが1つもないとき、コマンドパレットに表示しないようにする
-	// ワークスペースから、Gitのリポジトリを1つ選ばせる
+	/**
+	 * ワークスペースから、Gitのリポジトリを1つ選ばせる
+	 */
 	const chooseGit = async () => {
 		const gitApi = vscode.extensions.getExtension<GitExtension>('vscode.git')?.exports?.getAPI(1);
 		if (gitApi === undefined) {

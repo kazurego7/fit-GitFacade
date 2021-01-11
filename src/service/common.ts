@@ -2,7 +2,11 @@ import { SimpleGit, GitError } from "simple-git";
 import { ICommonIO } from '../ioInterface/commonIO';
 import * as config from '../util/config';
 
-// commitにひもづくstashの内、最新のstashを取得する
+/**
+ * commitにひもづくswing stashの内、最新のstashを取得する
+ * @param git
+ * @param commitId
+ */
 export const getStashRevByCommitId = async (git: SimpleGit, commitId: string) => {
     const stashes = (await git.stash(['list'])).split('\n').map((str) => str.trim());
     if (stashes.length === 0 || stashes[0] === '') {
@@ -32,8 +36,14 @@ export const getStashRevByCommitId = async (git: SimpleGit, commitId: string) =>
     }
 };
 
-// 現在のワークツリーとインデックスを保存して、既存のブランチへスイッチする。
-// スイッチ先のブランチで、そのブランチで以前に保存したワークツリーとインデックスを復元する。
+
+/**
+ * 現在のワークツリーとインデックスを保存して、既存のブランチへスイッチする  
+ * スイッチ先のブランチで、そのブランチで以前に保存したワークツリーとインデックスを復元する
+ * @param git
+ * @param afterBranchName 現在のブランチと同じならば、なにもしない
+ */
+
 export const swing = async (git: SimpleGit, afterBranchName: string) => {
     // swingの前と後のブランチが一緒ならばなにもしない
     const beforeBranchName = (await git.branch()).current;
@@ -64,8 +74,11 @@ export const swing = async (git: SimpleGit, afterBranchName: string) => {
         throw new Error('swing cancel.');
     }
 };
-
-// ユーザー名を取得する(空白はハイフン[-]に置き換える)
+/**
+ * ユーザー名を取得する  
+ * **(空白はハイフン[-]に置き換える)**
+ * @param git 
+ */
 export const getUserName = async (git: SimpleGit) => {
     const userNameOneOrArray = (await git.listConfig()).all['user.name'];
     let userName = '';
@@ -78,7 +91,11 @@ export const getUserName = async (git: SimpleGit) => {
     return userNameValidated;
 };
 
-// ブランチタイトルとユーザー名からfeatブランチ名を作成する
+/**
+ * ブランチタイトルとユーザー名からfeatブランチ名を作成する
+ * @param git 
+ * @param branchTitle ブランチ名は "ブランチシンボル"+"ブランチタイトル" で構成される
+ */
 export const createFeatBranchName = async (git: SimpleGit, branchTitle: string) => {
     const userName = await getUserName(git);
     const branchSymobl = config.BRANCH_NAME_FEAT_SYMBOL
@@ -87,7 +104,12 @@ export const createFeatBranchName = async (git: SimpleGit, branchTitle: string) 
 };
 
 
-// ブランチタイトルとユーザー名からfeatブランチ名を作成する(既存のブランチと重複する場合はエラー)
+/**
+ * ブランチタイトルとユーザー名からfeatブランチ名を作成する  
+ * **(既存のブランチと重複する場合はエラー)**
+ * @param git 
+ * @param branchTitle 
+ */
 export const createFeatBranchNameValid = async (git: SimpleGit, branchTitle: string) => {
     const branchName = await createFeatBranchName(git, branchTitle);
     const branchNameList = (await git.branch()).all;
@@ -99,7 +121,11 @@ export const createFeatBranchNameValid = async (git: SimpleGit, branchTitle: str
     }
 };
 
-// feat ブランチ作成してswing後、空のコミットを行う
+/**
+ * feat ブランチ作成してswing後、空のコミットを行う
+ * @param git 
+ * @param newBranchName 既に存在するブランチ名と重複する場合はエラー
+ */
 export const feat = async (git: SimpleGit, newBranchName: string) => {
     await git.branch([newBranchName]);
     await swing(git, newBranchName);
@@ -113,13 +139,23 @@ export const feat = async (git: SimpleGit, newBranchName: string) => {
     }
 };
 
-// index に変更があるか
+
+/**
+ * index に変更があるか
+ * @param git 
+ * @return index に変更があれば true
+ */
 export const isChangeForIndex = async (git: SimpleGit) => {
     const index = await git.diff(['--cached', '--exit-code']);
     return index !== "";
 };
 
-// workingtree に変更があるか
+
+/**
+ * workingtree に変更があるか
+ * @param git 
+ * @return workingtree に変更があれば true
+ */
 export const isChangeForWorkingtree = async (git: SimpleGit) => {
     const modifed = await git.diff(['--exit-code']);
     const untracked = (await git.raw(['ls-files', '--other', '--exclude-standard', '--directory'])).trim();
@@ -127,8 +163,10 @@ export const isChangeForWorkingtree = async (git: SimpleGit) => {
 };
 
 /** 
- * merge conflict 中か(conflict marker がなくてもコミットされていなければ、conflict 中)
- * @param git gitクライアント
+ * merge conflict 中か  
+ * **(conflict marker がなくてもコミットされていなければ、conflict 中)**
+ * @param git
+ * @return merge conflict 中であれば true
  */
 export const isMergeConflict = async (git: SimpleGit) => {
     const notMergedFileNames = await git.diff(['--name-only', '--diff-filter=U']);
@@ -137,7 +175,8 @@ export const isMergeConflict = async (git: SimpleGit) => {
 
 /** 
  * conflict marker のあるファイルが存在するか
- * @param git gitクライアント
+ * @param git
+ * @return conflict marker のあるファイルが存在すれば true
  */
 export const existsConflictFile = async (git: SimpleGit) => {
     // conflict marker または whitespace error が発生しているファイルから、conflict marker のあるファイルが存在するときのみ false
@@ -155,7 +194,7 @@ export enum MergeResult {
 
 /** 
  * no-fast-forward で merge を行う
- * @param git gitクライアント
+ * @param git
  */
 export const merge = async (git: SimpleGit) => {
     try {

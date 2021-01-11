@@ -4,7 +4,16 @@ import * as path from 'path';
 import { promises as fs, Stats } from 'fs';
 import * as config from '../util/config';
 
-// fitでのgit管理のため準備をする
+/**
+ * fitでのgit管理のため準備をする  
+ * - リモートリポジトリへの登録(既に登録済みの場合はスキップ)
+ * - first commit がなければ、空のコミットを行う
+ * - デフォルトのブランチ名を変更(既に変更済みの場合はスキップ)
+ * - テンプレートの.gitignoreをルートディレクトリ直下に追加しコミットする(.gitignoreが既に存在すればスキップ)
+ * - gitlab flow production の作成(既に作成済みの場合はスキップ)
+ * @param io 
+ * @param git 
+ */
 export const setup = async (io: ICommonIO, git: SimpleGit) => {
     // リモートリポジトリへの登録(既に登録済みの場合はスキップ)
     const hasAddRemote = (await git.getRemotes())

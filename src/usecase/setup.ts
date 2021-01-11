@@ -8,7 +8,6 @@ import * as config from '../util/config';
  * fitでのgit管理のため準備をする  
  * - リモートリポジトリへの登録(既に登録済みの場合はスキップ)
  * - first commit がなければ、空のコミットを行う
- * - デフォルトのブランチ名を変更(既に変更済みの場合はスキップ)
  * - テンプレートの.gitignoreをルートディレクトリ直下に追加しコミットする(.gitignoreが既に存在すればスキップ)
  * - gitlab flow production の作成(既に作成済みの場合はスキップ)
  * @param io 
@@ -41,13 +40,6 @@ export const setup = async (io: ICommonIO, git: SimpleGit) => {
     }
     if (stagingFiles.length > 0) {
         throw new Error('index is not empty.');
-    }
-
-    // デフォルトのブランチ名を変更(既に変更済みの場合はスキップ)
-    const branchList = await git.branch();
-    const existsBranch = (branchName: string) => branchList.all.some((name) => branchName === name);
-    if (existsBranch(config.BRANCH_NAME_DEFAULT) && !existsBranch(config.BRANCH_NAME_MAIN)) {
-        await git.branch(['--move', config.BRANCH_NAME_DEFAULT, config.BRANCH_NAME_MAIN]);
     }
 
     // テンプレートの.gitignoreをルートディレクトリ直下に追加しコミットする(.gitignoreが既に存在すればスキップ)

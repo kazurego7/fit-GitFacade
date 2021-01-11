@@ -35,7 +35,8 @@ export function activate(context: vscode.ExtensionContext) {
 					const rootDirName = path.basename(rootPath);
 					let branchName = (await (git.branch())).current;
 					if (branchName === '') {
-						branchName = config.BRANCH_NAME_DEFAULT;
+						const defaultBranch = (await git.raw(['config', '--global', 'init.defaultBranch'])).trim();
+						branchName = defaultBranch === '' ? 'master' : defaultBranch;
 					}
 					return {
 						label: `${rootDirName}`,

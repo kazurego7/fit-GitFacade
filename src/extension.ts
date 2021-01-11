@@ -46,6 +46,8 @@ export function activate(context: vscode.ExtensionContext) {
 			);
 			if (choices.length < 1) {
 				throw new Error("git is not found");
+			} else if (choices.length === 1) {
+				return choices[0].data;
 			} else {
 				return io.select(choices);
 			}

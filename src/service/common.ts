@@ -3,39 +3,62 @@ import { ICommonIO } from '../ioInterface/commonIO';
 import * as config from '../util/config';
 
 /**
- * commitにひもづくswing stashの内、最新のstashを取得する
+ * bind stash (commit に紐付いた stash) の種類
+ */
+export enum BindStashType {
+    swing = "swing",
+    snapshot = "snapshot",
+}
+
+/**
+ * 指定された種類のbind stash の rev を全て取得する
  * @param git
  * @param commitId
  */
-export const getStashRevByCommitId = async (git: SimpleGit, commitId: string) => {
+export const getBindStashRevs = async (git: SimpleGit, stashType: BindStashType, commitId: string) => {
     const stashes = (await git.stash(['list'])).split('\n').map((str) => str.trim());
-    if (stashes.length === 0 || stashes[0] === '') {
+    return stashes
+        .map((item) => {
+            const stashComments = item.split(': ').map((str) => str.trim());
+            return { revision: stashComments[0], message: stashComments[2] };
+        })
+        .filter((item) => {
+            return item.message === `${stashType} ${commitId}`;
+        })
+        .map((item) => item.revision);
+};
+
+/**
+ * bind stash を push する
+ * @param git 
+ * @param commitId 
+ */
+export const pushBindStash = async (git: SimpleGit, stashType: BindStashType, commitId: string) => {
+    await git.stash(['push', '--include-untracked', '--message', `${stashType} ${commitId}`]);
+};
+
+/**
+ * bind stash の内、最新のものを pop する  
+ * @param git 
+ * @param commitId 
+ */
+export const popBindStash = async (git: SimpleGit, stashType: BindStashType, commitId: string) => {
+    const stashRevs = await getBindStashRevs(git, stashType, commitId);
+    if (stashRevs.length === 0) {
         return;
     } else {
-        const swingStashs = stashes
-            .map((item) => {
-                const stashComments = item.split(': ').map((str) => str.trim());
-                return { revision: stashComments[0], message: stashComments[2] };
-            })
-            .filter((item) => {
-                return item.message === `swing ${commitId}`;
-            }).sort((a, b) => {
-                if (a.revision < b.revision) {
-                    return -1;
-                } else if (a.revision > b.revision) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            });
-        if (swingStashs.length > 0) {
-            return swingStashs[0].revision;
-        } else {
-            return;
-        }
+        const stashRev = stashRevs[0];
+        await git.stash(['pop', '--index', stashRev]);
     }
 };
 
+/**
+ * 現在チェックアウトしているコミットのコミットIDを取得する
+ * @param git 
+ */
+export const getCommitId = async (git: SimpleGit) => {
+    return (await git.show(['--no-patch', '--format=%H'])).trim();
+};
 
 /**
  * 現在のワークツリーとインデックスを保存して、既存のブランチへスイッチする  
@@ -43,7 +66,6 @@ export const getStashRevByCommitId = async (git: SimpleGit, commitId: string) =>
  * @param git
  * @param afterBranchName 現在のブランチと同じならば、なにもしない
  */
-
 export const swing = async (git: SimpleGit, afterBranchName: string) => {
     // swingの前と後のブランチが一緒ならばなにもしない
     const beforeBranchName = (await git.branch()).current;
@@ -52,25 +74,17 @@ export const swing = async (git: SimpleGit, afterBranchName: string) => {
     }
 
     // 現在チェックアウトしているコミットに紐づくswing-stashのpush
-    const beforeCommitId = (await git.show(['--no-patch', '--format=%H'])).trim();
-    await git.stash(['push', '--include-untracked', '--message', `swing ${beforeCommitId}`]);
+    const beforeCommitId = await getCommitId(git);
+    pushBindStash(git, BindStashType.swing, beforeCommitId);
 
     // ブランチを移動して、コミットにswing用の stash があれば、それを apply する(index も含める)
     try {
         await git.checkout(afterBranchName);
-        const afterCommitId = (await git.show(['--no-patch', '--format=%H'])).trim();
-        const afterSwingStashRev = await getStashRevByCommitId(git, afterCommitId);
-        if (afterSwingStashRev !== undefined) {
-            await git.stash(['apply', '--index', afterSwingStashRev]);
-            await git.stash(['drop', afterSwingStashRev]);
-        }
+        const afterCommitId = await getCommitId(git);
+        popBindStash(git, BindStashType.swing, afterCommitId);
     } catch {
-        const beforeSwingStashRev = await getStashRevByCommitId(git, beforeCommitId);
-        if (beforeSwingStashRev !== undefined) {
-            await git.stash(['apply', '--index', beforeSwingStashRev]);
-            await git.stash(['drop', beforeSwingStashRev]);
-        }
         await git.checkout(beforeBranchName);
+        popBindStash(git, BindStashType.swing, beforeCommitId);
         throw new Error('swing cancel.');
     }
 };

@@ -48,5 +48,5 @@ export const follow = async (io: ICommonIO, git: SimpleGit) => {
     }
 
     // 現在のブランチに merge する
-    await git.merge([config.BRANCH_NAME_MAIN]);
+    await git.merge(['--no-ff', config.BRANCH_NAME_MAIN]);
 };

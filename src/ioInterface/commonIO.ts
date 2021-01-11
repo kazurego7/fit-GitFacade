@@ -1,3 +1,6 @@
+/**
+ * 入出力のための共通インターフェース
+ */
 export interface ICommonIO {
     input(description: string): Promise<string>
     select<T>(choices: SelectItem<T>[]): Promise<T>

@@ -3,8 +3,11 @@ import { ICommonIO } from '../ioInterface/commonIO';
 import * as service from "../service/common";
 import * as config from '../util/config';
 
-
-// featureブランチを作成する。メインブランチにチェックアウトしている場合は、作成したfeatureブランチに移動する。
+/**
+ * featureブランチを作成し、作成したfeatureブランチに移動する
+ * @param io 
+ * @param git 
+ */
 export const feat = async (io: ICommonIO, git: SimpleGit) => {
     // ブランチ名の取得
     const newBranchNameNotice = await service.createFeatBranchName(git, '"タイトル"');

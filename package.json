@@ -17,22 +17,27 @@
 		"commands": [
 			{
 				"command": "fit.setup",
-				"title": "Git管理の準備をする",
+				"title": "setup: Git管理の準備をする",
 				"category": "Fit"
 			},
 			{
 				"command": "fit.feat",
-				"title": "featureブランチを作成する",
+				"title": "feat: featureブランチを作成する",
 				"category": "Fit"
 			},
 			{
 				"command": "fit.swing",
-				"title": "作業を保存してブランチを切り替える",
+				"title": "swing: 作業を保存してブランチを切り替える",
 				"category": "Fit"
 			},
 			{
 				"command": "fit.replant",
-				"title": "作業状態を保ったままブランチを切り替える",
+				"title": "replant: 作業状態を保ったままブランチを切り替える",
+				"category": "Fit"
+			},
+			{
+				"command": "fit.follow",
+				"title": "follow: リモートのメインブランチに追従する",
 				"category": "Fit"
 			}
 		]

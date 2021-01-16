@@ -8,8 +8,7 @@ import * as config from '../util/config';
  * fitでのgit管理のため準備をする  
  * - リモートリポジトリへの登録(既に登録済みの場合はスキップ)
  * - first commit がなければ、空のコミットを行う
- * - テンプレートの.gitignoreをルートディレクトリ直下に追加しコミットする(.gitignoreが既に存在すればスキップ)
- * - gitlab flow production の作成(既に作成済みの場合はスキップ)
+ * - テンプレートの.gitignoreを指定のディレクトリに追加しコミットする(.gitignoreが既に存在すればスキップ)
  * @param io 
  * @param git 
  */
@@ -42,9 +41,9 @@ export const setup = async (io: ICommonIO, git: SimpleGit) => {
         await git.commit(`${config.COMMIT_MSG_AUTO} first commit.`, ['--allow-empty']);
     }
 
-    // テンプレートの.gitignoreをルートディレクトリ直下に追加しコミットする(.gitignoreが既に存在すればスキップ)
+    // テンプレートの.gitignoreを指定のディレクトリに追加しコミットする(.gitignoreが既に存在すればスキップ)
     const rootDirPath = await git.revparse(['--show-toplevel']);
-    const rootIgnorePath = path.join(rootDirPath, '.gitignore');
+    const rootIgnorePath = path.join(rootDirPath, config.GITIGNORE_DIR_PATH, '.gitignore');
     try {
         await fs.stat(rootIgnorePath);
     } catch {

@@ -55,18 +55,4 @@ export const setup = async (io: ICommonIO, git: SimpleGit) => {
         await git.add(rootIgnorePath);
         await git.commit(`${config.COMMIT_MSG_AUTO} add gitignore.`);
     }
-
-    // gitlab flow production の作成(既に作成済みの場合はスキップ)
-    try {
-        await git.revparse(['--verify', `refs/heads/${config.BRANCH_NAME_PRODUCTION}`]);
-    } catch {
-        let firstCommitId = (await git.raw(['rev-list', '--max-parents=0', config.BRANCH_NAME_MAIN])).trim();
-        if (firstCommitId === '') {
-            const firstCommit = await git.commit(`${config.COMMIT_MSG_AUTO} first commit.`, ['--allow-empty']);
-            await git.branch([config.BRANCH_NAME_PRODUCTION, firstCommit.commit]);
-        } else {
-            await git.branch([config.BRANCH_NAME_PRODUCTION, firstCommitId]);
-        }
-        await git.checkout(config.BRANCH_NAME_MAIN);
-    }
 };

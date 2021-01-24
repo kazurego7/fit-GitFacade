@@ -43,7 +43,8 @@ export function activate(context: vscode.ExtensionContext) {
 				})
 			);
 			if (choices.length < 1) {
-				throw new Error("git is not found");
+				await vscode.window.showInformationMessage(`ワークスペースに git のリポジトリが存在しません。`);
+				return;
 			} else if (choices.length === 1) {
 				return choices[0].data;
 			} else {
@@ -67,10 +68,14 @@ export function activate(context: vscode.ExtensionContext) {
 		return async () => {
 			const io: ICommonIO = new VSCodeIO();
 			const git = await chooseGit(io);
-			try {
-				await executor(io, git);
-			} catch (e) {
-				showError(e);
+			if (git === undefined) {
+				return;
+			} else {
+				try {
+					await executor(io, git);
+				} catch (e) {
+					showError(e);
+				}
 			}
 		};
 	};

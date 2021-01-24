@@ -12,6 +12,10 @@ export const feat = async (io: ICommonIO, git: SimpleGit) => {
     // ブランチ名の取得
     const newBranchNameNotice = await service.createFeatBranchName(git, '"タイトル"');
     const branchTitle = await io.input(`ブランチのタイトルを入力してください。ブランチ名は${newBranchNameNotice}となります。`);
-    const newBranchName = await service.createFeatBranchNameValid(git, branchTitle);
-    await service.feat(git, newBranchName);
+    if (branchTitle === undefined) {
+        return;
+    } else {
+        const newBranchName = await service.createFeatBranchNameValid(git, branchTitle);
+        await service.feat(git, newBranchName);
+    }
 };

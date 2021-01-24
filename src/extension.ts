@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
 		} else {
 			const choices = await Promise.all(
 				gitApi.repositories.map(async (repo) => {
-					const git = simpleGit(repo.rootUri.path);
+					const git = simpleGit(repo.rootUri.fsPath);
 					const rootPath = await git.revparse(['--show-toplevel']);
 					const rootDirName = path.basename(rootPath);
 					let branchName = (await (git.branch())).current;

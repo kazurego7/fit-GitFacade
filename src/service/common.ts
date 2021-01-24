@@ -26,16 +26,16 @@ export const swing = async (git: SimpleGit, afterBranchName: string) => {
 
     // 現在チェックアウトしているコミットに紐づくswing-stashのpush
     const beforeCommitId = await getCommitId(git);
-    bindStash.push(git, bindStash.BindType.swing, beforeCommitId);
+    await bindStash.push(git, bindStash.BindType.swing, beforeCommitId);
 
     // ブランチを移動して、コミットにswing用の stash があれば、それを apply する(index も含める)
     try {
         await git.checkout(afterBranchName);
         const afterCommitId = await getCommitId(git);
-        bindStash.pop(git, bindStash.BindType.swing, afterCommitId);
+        await bindStash.pop(git, bindStash.BindType.swing, afterCommitId);
     } catch {
         await git.checkout(beforeBranchName);
-        bindStash.pop(git, bindStash.BindType.swing, beforeCommitId);
+        await bindStash.pop(git, bindStash.BindType.swing, beforeCommitId);
         throw new Error('swing cancel.');
     }
 };
@@ -94,8 +94,8 @@ export const createFeatBranchNameValid = async (git: SimpleGit, branchTitle: str
 export const feat = async (git: SimpleGit, newBranchName: string) => {
     await git.branch([newBranchName]);
     await swing(git, newBranchName);
+    await git.reset(['HEAD']);
     try {
-        await git.checkout([newBranchName]);
         const commitMassage = `${config.COMMIT_MSG_AUTO} create feature branch.`;
         await git.commit(commitMassage, ['--allow-empty']);
     } catch {

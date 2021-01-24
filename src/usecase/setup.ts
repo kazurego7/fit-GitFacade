@@ -16,10 +16,9 @@ export const setup = async (io: ICommonIO, git: SimpleGit) => {
     // リモートリポジトリへの登録(既に登録済みの場合はスキップ)
     const hasAddRemote = (await git.getRemotes())
         .some((remote) => remote.name === config.REMOTE_DEFAULT);
-    let remoteURL = '';
     if (!hasAddRemote) {
-        remoteURL = await io.input('リモートリポジトリのURLを入力。指定しない場合は空白のまま。');
-        if (remoteURL !== '') {
+        const remoteURL = await io.input('リモートリポジトリのURLを入力。指定しない場合は空白のまま。');
+        if (remoteURL !== undefined && remoteURL !== '') {
             await git.listRemote([`${remoteURL}`]);
             await git.addRemote(config.REMOTE_DEFAULT, remoteURL);
         }

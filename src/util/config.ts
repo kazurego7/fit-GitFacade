@@ -7,6 +7,7 @@ export const GITIGNORE_DIR_PATH = '/';
 export const REMOTE_DEFAULT = 'origin';
 export const BRANCH_NAME_MAIN = 'main';
 export const BRANCH_NAME_PRODUCTION = 'production';
-export const BRANCH_NAME_FEAT_SYMBOL = '%user.name%_feat_'; // %user.name%は、ユーザー名
+export const BRANCH_NAME_FEATURE_SYMBOL = 'feat';
+export const BRANCH_NAME_HOTFIX_SYMBOL = 'fix';
 
-export const COMMIT_MSG_AUTO = 'auto-fit/';
+export const COMMIT_MSG_AUTO = 'auto-fit';

@@ -56,54 +56,6 @@ export const getUserName = async (git: SimpleGit) => {
     return userNameValidated;
 };
 
-/**
- * ブランチタイトルとユーザー名からfeatブランチ名を作成する
- * @param git 
- * @param branchTitle ブランチ名は "ブランチシンボル"+"ブランチタイトル" で構成される
- */
-export const createFeatBranchName = async (git: SimpleGit, branchTitle: string) => {
-    const userName = await getUserName(git);
-    const branchSymobl = config.BRANCH_NAME_FEAT_SYMBOL
-        .replace('%user.name%', userName);
-    return `${branchSymobl}${branchTitle}`;
-};
-
-
-/**
- * ブランチタイトルとユーザー名からfeatブランチ名を作成する  
- * **(既存のブランチと重複する場合はエラー)**
- * @param git 
- * @param branchTitle 
- */
-export const createFeatBranchNameValid = async (git: SimpleGit, branchTitle: string) => {
-    const branchName = await createFeatBranchName(git, branchTitle);
-    const branchNameList = (await git.branch()).all;
-    const isDuplicated = branchNameList.some((name) => name === branchName);
-    if (isDuplicated) {
-        throw new Error("branch name is duplicated.");
-    } else {
-        return branchName;
-    }
-};
-
-/**
- * feat ブランチ作成してswing後、空のコミットを行う
- * @param git 
- * @param newBranchName 既に存在するブランチ名と重複する場合はエラー
- */
-export const feat = async (git: SimpleGit, newBranchName: string) => {
-    await git.branch([newBranchName]);
-    await swing(git, newBranchName);
-    await git.reset(['HEAD']);
-    try {
-        const commitMassage = `${config.COMMIT_MSG_AUTO} create feature branch.`;
-        await git.commit(commitMassage, ['--allow-empty']);
-    } catch {
-        await git.branch(['--delete', newBranchName]);
-        throw new Error('feat failed.');
-    }
-};
-
 
 /**
  * index に変更があるか

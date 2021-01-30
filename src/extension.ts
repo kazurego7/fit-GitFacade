@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import { setup } from './usecase/setup';
 import { feat } from './usecase/feat';
+import { fix } from './usecase/fix';
 import { swing } from './usecase/swing';
 import { replant } from './usecase/replant';
 import { follow } from './usecase/follow';
@@ -84,6 +85,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const handlers = [
 		vscode.commands.registerCommand('fit.setup', createGUICommand(setup)),
 		vscode.commands.registerCommand('fit.feat', createGUICommand(feat)),
+		vscode.commands.registerCommand('fit.fix', createGUICommand(fix)),
 		vscode.commands.registerCommand('fit.swing', createGUICommand(swing)),
 		vscode.commands.registerCommand('fit.replant', createGUICommand(replant)),
 		vscode.commands.registerCommand('fit.follow', createGUICommand(follow)),

@@ -27,6 +27,11 @@
 				"category": "Fit"
 			},
 			{
+				"command": "fit.fix",
+				"title": "fix: hotfixブランチを作成する",
+				"category": "Fit"
+			},
+			{
 				"command": "fit.swing",
 				"title": "swing: 作業を保存してブランチを切り替える",
 				"category": "Fit"

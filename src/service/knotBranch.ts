@@ -1,6 +1,7 @@
 import { SimpleGit, GitError } from "simple-git";
 import * as config from '../util/config';
 import * as common from './common';
+import * as bindStash from '../service/BindStash';
 
 /**
  * ユーザー名、ブランチシンボル、ブランチタイトルから、ブランチ名を作成する  
@@ -67,9 +68,15 @@ export const validBranchName = async (git: SimpleGit, branchSymbol: string, bran
  * @param newBranchName 既に存在するブランチ名と重複する場合はエラー
  */
 export const create = async (git: SimpleGit, newBranchName: string) => {
+    if ((await git.branch()).current === config.BRANCH_NAME_MAIN) {
+        await git.reset(['HEAD']);
+    } else {
+        const commitId = await common.getCommitId(git);
+        await bindStash.push(git, bindStash.BindType.swing, commitId);
+        await git.checkout([config.BRANCH_NAME_MAIN]);
+    }
     await git.branch([newBranchName]);
-    await common.swing(git, newBranchName);
-    await git.reset(['HEAD']);
+    await git.checkout([newBranchName]);
     try {
         const commitMassage = `${config.COMMIT_MSG_AUTO}: knot commit.`;
         await git.commit(commitMassage, ['--allow-empty']);

@@ -1,7 +1,7 @@
 import { SimpleGit, GitError } from "simple-git";
 import { ICommonIO } from '../ioInterface/commonIO';
 import * as config from '../util/config';
-import * as bindStash from './bindStash';
+import * as bindStash from '../service/BindStash';
 
 /**
  * 現在チェックアウトしているコミットのコミットIDを取得する

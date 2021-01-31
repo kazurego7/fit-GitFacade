@@ -1,7 +1,7 @@
 import { SimpleGit, GitError } from "simple-git";
 import * as config from '../util/config';
 import * as common from './common';
-import * as bindStash from '../service/BindStash';
+import * as bindStash from './bindStash';
 
 /**
  * ユーザー名、ブランチシンボル、ブランチタイトルから、ブランチ名を作成する  

@@ -4,6 +4,7 @@ import { SimpleGit, GitError } from "simple-git";
  * bind stash (commit に紐付いた stash) の種類
  */
 export enum BindType {
+    temp = "temp",
     swing = "swing",
     snapshot = "snapshot",
 }

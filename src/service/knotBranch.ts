@@ -69,13 +69,9 @@ export const validBranchName = async (git: SimpleGit, branchSymbol: string, bran
  * @param newBranchName 既に存在するブランチ名と重複する場合はエラー
  */
 export const create = async (git: SimpleGit, newBranchName: string) => {
-    if ((await git.branch()).current === config.BRANCH_NAME_MAIN) {
-        await git.reset(['HEAD']);
-    } else {
-        const commitId = await common.getCommitId(git);
-        await bindStash.push(git, bindStash.BindType.swing, commitId);
-        await git.checkout([config.BRANCH_NAME_MAIN]);
-    }
+    const commitId = await common.getCommitId(git);
+    await bindStash.push(git, bindStash.BindType.swing, commitId);
+    await git.checkout([config.BRANCH_NAME_MAIN]);
     await git.branch([newBranchName]);
     await git.checkout([newBranchName]);
     try {

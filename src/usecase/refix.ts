@@ -2,25 +2,28 @@ import { SimpleGit } from "simple-git";
 import { ICommonIO } from '../ioInterface/commonIO';
 import * as config from '../util/config';
 import * as knotBranch from '../service/knotBranch';
+import * as bindStash from '../service/bindStash';
+import * as common from "../service/common";
 
 /**
- * 現在のワークツリーとインデックスのまま、新しいfeatブランチへ移動する
+ * 現在のワークツリーとインデックスのまま、新しいhotfixブランチへ移動する
  * @param io 
  * @param git 
  */
-export const replant = async (io: ICommonIO, git: SimpleGit) => {
+export const refix = async (io: ICommonIO, git: SimpleGit) => {
     while (true) {
         // 新しいブランチの名前を決定する
-        const newBranchNameNotice = await knotBranch.getBranchName(git, config.BRANCH_NAME_FEATURE_SYMBOL, `\'タイトル\'`);
-        const branchTitle = await io.input(`作業内容を移し替える、新しいfeatureブランチのタイトルを入力してください。ブランチ名は${newBranchNameNotice}となります。`);
+        const newBranchNameNotice = await knotBranch.getBranchName(git, config.BRANCH_NAME_HOTFIX_SYMBOL, `\'タイトル\'`);
+        const branchTitle = await io.input(`作業内容を移し替える、新しいhotfixブランチのタイトルを入力してください。ブランチ名は${newBranchNameNotice}となります。`);
         if (branchTitle === undefined) {
             return;
         } else {
             // 新しいブランチに、作業内容を移し替える
-            await git.stash(['push', '--include-untracked', '--message', 'replant']);
+            const commitId = await common.getCommitId(git);
+            await bindStash.push(git, bindStash.BindType.temp, commitId);
             try {
-                const invalidType = await knotBranch.validBranchName(git, config.BRANCH_NAME_FEATURE_SYMBOL, branchTitle);
-                const newBranchName = await knotBranch.getBranchName(git, config.BRANCH_NAME_FEATURE_SYMBOL, branchTitle);
+                const invalidType = await knotBranch.validBranchName(git, config.BRANCH_NAME_HOTFIX_SYMBOL, branchTitle);
+                const newBranchName = await knotBranch.getBranchName(git, config.BRANCH_NAME_HOTFIX_SYMBOL, branchTitle);
                 switch (invalidType) {
                     case knotBranch.Validated.blankSymbol:
                         io.output(`ブランチ名 "${newBranchName}": ブランチシンボルが空白です。`);
@@ -41,7 +44,7 @@ export const replant = async (io: ICommonIO, git: SimpleGit) => {
                 }
             } catch {
             } finally {
-                await git.stash(['pop', '--index']);
+                await bindStash.pop(git, bindStash.BindType.temp, commitId);
             }
         }
     }

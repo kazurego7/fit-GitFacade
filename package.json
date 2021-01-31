@@ -23,12 +23,12 @@
 			},
 			{
 				"command": "fit.feat",
-				"title": "feat: featureブランチを作成する",
+				"title": "feat: 作業を保存してfeatureブランチを作成する",
 				"category": "Fit"
 			},
 			{
 				"command": "fit.fix",
-				"title": "fix: hotfixブランチを作成する",
+				"title": "fix: 作業を保存してhotfixブランチを作成する",
 				"category": "Fit"
 			},
 			{
@@ -37,8 +37,13 @@
 				"category": "Fit"
 			},
 			{
-				"command": "fit.replant",
-				"title": "replant: 作業状態を保ったままブランチを切り替える",
+				"command": "fit.refeat",
+				"title": "refeat: 作業状態を新しいfeatureブランチに移し替える",
+				"category": "Fit"
+			},
+			{
+				"command": "fit.refix",
+				"title": "refix: 作業状態を新しいhotfixブランチに移し替える",
 				"category": "Fit"
 			},
 			{

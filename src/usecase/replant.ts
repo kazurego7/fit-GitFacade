@@ -18,8 +18,9 @@ export const replant = async (io: ICommonIO, git: SimpleGit) => {
         // 新しいブランチに、作業内容を移し替える
         await git.stash(['push', '--include-untracked', '--message', 'replant']);
         try {
-            const newBranchName = await knotBranch.validBranchName(git, config.BRANCH_NAME_FEATURE_SYMBOL, branchTitle);
-            switch (newBranchName) {
+            const invalidType = await knotBranch.validBranchName(git, config.BRANCH_NAME_FEATURE_SYMBOL, branchTitle);
+            const newBranchName = await knotBranch.getBranchName(git, config.BRANCH_NAME_FEATURE_SYMBOL, branchTitle);
+            switch (invalidType) {
                 case knotBranch.Validated.blankSymbol:
                     await io.output(`ブランチ名 "${newBranchName}": ブランチシンボルが空白です。`);
                     break;

@@ -15,8 +15,9 @@ export const feat = async (io: ICommonIO, git: SimpleGit) => {
     if (branchTitle === undefined) {
         return;
     } else {
-        const newBranchName = await knotBranch.validBranchName(git, config.BRANCH_NAME_FEATURE_SYMBOL, branchTitle);
-        switch (newBranchName) {
+        const invalidType = await knotBranch.validBranchName(git, config.BRANCH_NAME_FEATURE_SYMBOL, branchTitle);
+        const newBranchName = await knotBranch.getBranchName(git, config.BRANCH_NAME_FEATURE_SYMBOL, branchTitle);
+        switch (invalidType) {
             case knotBranch.Validated.blankSymbol:
                 await io.output(`ブランチ名 "${newBranchName}": ブランチシンボルが空白です。`);
                 break;

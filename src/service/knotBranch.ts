@@ -23,7 +23,8 @@ export enum Validated {
     blankSymbol,
     blankTitle,
     invalidFormat,
-    duplicatedBranchName
+    duplicatedBranchName,
+    ok
 };
 
 /**
@@ -57,7 +58,7 @@ export const validBranchName = async (git: SimpleGit, branchSymbol: string, bran
     } else if (formatIsInvalid) {
         return Validated.invalidFormat;
     } else {
-        return branchName;
+        return Validated.ok;
     }
 };
 

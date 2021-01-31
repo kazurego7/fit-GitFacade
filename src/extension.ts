@@ -5,7 +5,7 @@ import { setup } from './usecase/setup';
 import { feat } from './usecase/feat';
 import { fix } from './usecase/fix';
 import { swing } from './usecase/swing';
-import { replant } from './usecase/replant';
+import { refeat } from './usecase/refeat';
 import { follow } from './usecase/follow';
 import { VSCodeIO } from "./ioImplement/vscodeIO";
 import simpleGit, { SimpleGit } from 'simple-git';
@@ -87,7 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand('fit.feat', createGUICommand(feat)),
 		vscode.commands.registerCommand('fit.fix', createGUICommand(fix)),
 		vscode.commands.registerCommand('fit.swing', createGUICommand(swing)),
-		vscode.commands.registerCommand('fit.replant', createGUICommand(replant)),
+		vscode.commands.registerCommand('fit.refeat', createGUICommand(refeat)),
 		vscode.commands.registerCommand('fit.follow', createGUICommand(follow)),
 	];
 

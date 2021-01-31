@@ -37,8 +37,8 @@
 				"category": "Fit"
 			},
 			{
-				"command": "fit.replant",
-				"title": "replant: 作業状態を保ったままブランチを切り替える",
+				"command": "fit.refeat",
+				"title": "refeat: 作業状態を保ったままブランチを切り替える",
 				"category": "Fit"
 			},
 			{

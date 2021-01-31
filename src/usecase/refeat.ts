@@ -8,7 +8,7 @@ import * as knotBranch from '../service/knotBranch';
  * @param io 
  * @param git 
  */
-export const replant = async (io: ICommonIO, git: SimpleGit) => {
+export const refeat = async (io: ICommonIO, git: SimpleGit) => {
     while (true) {
         // 新しいブランチの名前を決定する
         const newBranchNameNotice = await knotBranch.getBranchName(git, config.BRANCH_NAME_FEATURE_SYMBOL, `\'タイトル\'`);
@@ -17,7 +17,7 @@ export const replant = async (io: ICommonIO, git: SimpleGit) => {
             return;
         } else {
             // 新しいブランチに、作業内容を移し替える
-            await git.stash(['push', '--include-untracked', '--message', 'replant']);
+            await git.stash(['push', '--include-untracked', '--message', 'refeat']);
             try {
                 const invalidType = await knotBranch.validBranchName(git, config.BRANCH_NAME_FEATURE_SYMBOL, branchTitle);
                 const newBranchName = await knotBranch.getBranchName(git, config.BRANCH_NAME_FEATURE_SYMBOL, branchTitle);

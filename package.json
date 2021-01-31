@@ -38,7 +38,12 @@
 			},
 			{
 				"command": "fit.refeat",
-				"title": "refeat: 作業状態を保ったままブランチを切り替える",
+				"title": "refeat: 作業状態を新しいfeatureブランチに移し替える",
+				"category": "Fit"
+			},
+			{
+				"command": "fit.refix",
+				"title": "refix: 作業状態を新しいhotfixブランチに移し替える",
 				"category": "Fit"
 			},
 			{

@@ -15,8 +15,11 @@ export const swing = async (io: ICommonIO, git: SimpleGit) => {
         .filter((branchName) => branchName !== beforBranches.current)
         .map((branchName) => { return { label: branchName, data: branchName }; });
     const selectedBranchName = await io.select(selectableBranches);
-
-    // 現在のワークツリーとインデックスを保存して、既存のブランチへスイッチする。
-    // スイッチ先のブランチで、そのブランチで以前に保存したワークツリーとインデックスを復元する。
-    service.swing(git, selectedBranchName);
+    if (selectedBranchName === undefined) {
+        return;
+    } else {
+        // 現在のワークツリーとインデックスを保存して、既存のブランチへスイッチする。
+        // スイッチ先のブランチで、そのブランチで以前に保存したワークツリーとインデックスを復元する。
+        service.swing(git, selectedBranchName);
+    }
 };

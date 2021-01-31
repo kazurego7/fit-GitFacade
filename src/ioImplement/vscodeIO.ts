@@ -3,14 +3,14 @@ import * as vscode from 'vscode';
 import { assert } from "console";
 
 export class VSCodeIO implements ICommonIO {
-    async input(description: string): Promise<string|undefined> {
+    async input(description: string): Promise<string | undefined> {
         return await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: description });
     }
-    async select<T>(choices: SelectItem<T>[]): Promise<T> {
+    async select<T>(choices: SelectItem<T>[]): Promise<T | undefined> {
         assert(choices.length > 0);
         const picked = await vscode.window.showQuickPick(choices, { ignoreFocusOut: true });
         if (picked === undefined) {
-            throw new Error("QuickPick cancel.");
+            return undefined;
         } else {
             const pickedIndex = choices
                 .map((item, i) => { return { item: item, index: i }; })

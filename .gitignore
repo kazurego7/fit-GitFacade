@@ -1,5 +1,9 @@
+# node
 out
 dist
 node_modules
 .vscode-test/
 *.vsix
+
+# secrets
+container/.env

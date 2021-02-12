@@ -38,6 +38,8 @@ jobs:
         git push origin --tags
     # vsix のビルド
     - name: build vsix
+      env:
+        NPM_CONFIG_PREFIX: "~/.npm-global"
       run: |
         npm ci
         npm install --global vsce

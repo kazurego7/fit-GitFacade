@@ -36,6 +36,10 @@ jobs:
         npm version ${{ github.event.inputs.deploy }}
         git push origin main
         git push origin --tags
+    # npm global tools の PATH の追加
+    - name: add npm global tools path
+      run: |
+        echo "/home/runner/.npm-global/lib/node_modules/vsce/out" >> $GITHUB_PATH
     # vsix のビルド
     - name: build vsix
       env:
@@ -43,11 +47,11 @@ jobs:
       run: |
         npm ci
         npm install --global vsce
-        echo "/home/runner/.npm-global/lib/node_modules/vsce/out/vsce" >> $GITHUB_PATH
         vsce package
     # vsix のパスを環境変数に登録
     - name: set vsix path to env
-      run: echo '::set-output name=VSIX_PATH::`ls *.vsix`'
+      run: |
+        echo '::set-output name=VSIX_PATH::`ls *.vsix`'
       id: vsix-path
     # vsix をアーティファクトとして登録
     - name: upload as artifact

@@ -2,7 +2,7 @@
 	"name": "fit",
 	"displayName": "fit",
 	"description": "fit is a mere git facade.",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"publisher": "kazurego7",
 	"engines": {
 		"vscode": "^1.52.0"

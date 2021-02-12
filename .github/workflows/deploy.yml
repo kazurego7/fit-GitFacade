@@ -22,16 +22,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     # npm version での更新
-    - name: Update npm version
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-    - uses: actions-js/push@v1.2
+    - name: setup checkout
+      uses: actions/checkout@v2
+    - name: setup node
+      uses: actions/setup-node@v2
+    - name: setup push
+      uses: actions-js/push@v1.2
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
     - run: |
         git checkout main
         npm version ${{ github.event.inputs.deploy }}
-        # git push origin main
+        git push origin main
     
     # vsix のデプロイ
     - name: vsce publish for container

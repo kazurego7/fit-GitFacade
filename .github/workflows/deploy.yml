@@ -35,11 +35,11 @@ jobs:
         git checkout main
         npm version ${{ github.event.inputs.deploy }}
         git push origin main
+        git push origin --tags
     # vsix のビルド
     - name: build vsix
       run: |
         npm ci
-        npm package
     # vsix をアーティファクトとして登録
     - name: upload as artifact
       uses: actions/upload-artifact@v2

@@ -35,11 +35,20 @@ jobs:
         git checkout main
         npm version ${{ github.event.inputs.deploy }}
         git push origin main
-    
+    # vsix のビルド
+    - name: build vsix
+      run: |
+        npm ci
+        npm package
+    # vsix をアーティファクトとして登録
+    - name: upload as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        path: ${{github.workspace}}/*.vsix
     # vsix のデプロイ
     - name: vsce publish for container
-      run: |
-        npm install -g vsce
-        npm install
-        vsce package
-        vsce publish --pat ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+      uses: lannonbr/vsce-action@master
+      with:
+        args: "publish --pat $VSCE_TOKEN"
+      env:
+        VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}

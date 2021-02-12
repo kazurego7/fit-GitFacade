@@ -51,13 +51,14 @@ jobs:
     # vsix のパスを環境変数に登録
     - name: set vsix path to env
       run: |
-        echo "::set-output name=VSIX_PATH::`ls *.vsix`"
+        echo "::set-output name=VSIX_FILE::`ls *.vsix`"
       id: vsix-path
     # vsix をアーティファクトとして登録
     - name: upload as artifact
       uses: actions/upload-artifact@v2
       with:
-        path: ${{ github.workspace }}/${{ steps.vsix-path.outputs.VSIX_PATH }}
+        name: ${{ steps.vsix-path.outputs.VSIX_FILE }}
+        path: ${{ github.workspace }}/${{ steps.vsix-path.outputs.VSIX_FILE }}
     # vsix のデプロイ
     - name: vsce publish for container
       run: |

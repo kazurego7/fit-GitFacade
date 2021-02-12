@@ -40,15 +40,18 @@ jobs:
     - name: build vsix
       run: |
         npm ci
+        npm install --global vsce
+        vsce package
+    # vsix のパスを環境変数に登録
+    - name: set vsix path to env
+      run: echo '::set-output name=VSCE_TOKEN::`ls *.vsix`'
+      id: vsix-path
     # vsix をアーティファクトとして登録
     - name: upload as artifact
       uses: actions/upload-artifact@v2
       with:
-        path: ${{github.workspace}}/*.vsix
+        path: ${{ github.workspace }}/${{ steps.vsix-path.outputs.VSCE_TOKEN }}
     # vsix のデプロイ
     - name: vsce publish for container
-      uses: lannonbr/vsce-action@master
-      with:
-        args: "publish --pat $VSCE_TOKEN"
-      env:
-        VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+      run: |
+        vsce publish --pat ${{ VSCE_TOKEN }}

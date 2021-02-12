@@ -54,4 +54,4 @@ jobs:
     # vsix のデプロイ
     - name: vsce publish for container
       run: |
-        vsce publish --pat ${{ VSCE_TOKEN }}
+        vsce publish --pat ${{ secrets.VSCE_TOKEN }}

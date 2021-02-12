@@ -1,0 +1,42 @@
+# 手動実行による vscode extension デプロイのワークフロー
+
+name: Manual workflow
+
+# 手動実行でのワークフロー実行
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      deploy:
+        # Friendly description to be shown in the UI instead of 'name'
+        description: 'update version number (major, minor, patch)'
+        # Default value if no value is explicitly provided
+        default: 'patch'
+        # Input has to be provided for the workflow to run
+        required: true
+
+
+jobs:
+  # npm version での更新、vsix のデプロイ、を行う
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # npm version での更新
+    - name: Update npm version
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+    - uses: actions-js/push@v1.2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - run: |
+        git checkout main
+        npm version ${{ github.event.inputs.deploy }}
+        # git push origin main
+    
+    # vsix のデプロイ
+    - name: vsce publish for container
+    - run: |
+        npm install -g vsce
+        npm install
+        vsce package
+        vsce publish --pat ${{ secrets.PERSONAL_ACCESS_TOKEN }}

@@ -30,6 +30,7 @@ jobs:
       uses: actions-js/push@v1.2
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: npm version up
     - run: |
         git checkout main
         npm version ${{ github.event.inputs.deploy }}

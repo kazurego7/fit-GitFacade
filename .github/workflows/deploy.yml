@@ -51,7 +51,7 @@ jobs:
     # vsix のパスを環境変数に登録
     - name: set vsix path to env
       run: |
-        echo '::set-output name=VSIX_PATH::`ls *.vsix`'
+        echo "::set-output name=VSIX_PATH::`ls *.vsix`"
       id: vsix-path
     # vsix をアーティファクトとして登録
     - name: upload as artifact

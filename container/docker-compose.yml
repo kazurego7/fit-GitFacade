@@ -1,0 +1,10 @@
+# ローカルでのデプロイ自動化
+version: '3.8'
+services:
+  deploy:
+    build:
+      context: ../
+      dockerfile: ./container/Dockerfile
+    environment: 
+      - PROJECT_ROOT=./
+      - ACCESS_TOKEN=${ACCESS_TOKEN}

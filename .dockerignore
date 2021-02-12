@@ -1,0 +1,4 @@
+/container
+/.vscode-test
+/dist
+/node_modules

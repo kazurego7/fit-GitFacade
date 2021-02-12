@@ -43,6 +43,7 @@ jobs:
       run: |
         npm ci
         npm install --global vsce
+        echo "/home/runner/.npm-global/lib/node_modules/vsce/out/vsce" >> $GITHUB_PATH
         vsce package
     # vsix のパスを環境変数に登録
     - name: set vsix path to env

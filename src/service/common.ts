@@ -41,7 +41,7 @@ export const swing = async (git: SimpleGit, afterBranchName: string) => {
 };
 /**
  * ユーザー名を取得する  
- * **(空白はハイフン[-]に置き換える)**
+ * **(空白は"_"に置き換える)**
  * @param git 
  */
 export const getUserName = async (git: SimpleGit) => {
@@ -52,7 +52,7 @@ export const getUserName = async (git: SimpleGit) => {
     } else {
         userName = userNameOneOrArray;
     }
-    const userNameValidated = userName.replace(' ', '-');
+    const userNameValidated = userName.replace(' ', '_');
     return userNameValidated;
 };
 

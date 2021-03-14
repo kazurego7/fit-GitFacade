@@ -1,21 +1,23 @@
-import { SimpleGit, GitError } from "simple-git";
+import { SimpleGit } from "simple-git";
 import * as config from '../util/config';
 import * as common from './common';
 import * as bindStash from './bindStash';
 
 /**
  * ユーザー名、ブランチシンボル、ブランチタイトルから、ブランチ名を作成する  
- * ブランチ名は "[ユーザー名]_[ブランチシンボル]_[ブランチタイトル]" で構成される
+ * ブランチ名は "[ユーザー名]/[ブランチシンボル]/[ブランチタイトル]" で構成される  
+ * セパレータはデフォルトで"/"
  * @param git 
  * @param branchSymbol
  * @param branchTitle 
  */
 export const getBranchName = async (git: SimpleGit, branchSymbol: string, branchTitle: string) => {
     const userName = await common.getUserName(git);
+    const separator = config.BRANCH_NAME_SEPARATOR;
     if (userName.trim() === "") {
         throw Error("user.name config is not set.");
     } else {
-        return `${userName}_${branchSymbol}_${branchTitle}`;
+        return `${userName}${separator}${branchSymbol}${separator}${branchTitle}`;
     }
 };
 

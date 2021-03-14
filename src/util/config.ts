@@ -9,5 +9,6 @@ export const BRANCH_NAME_MAIN = 'main';
 export const BRANCH_NAME_PRODUCTION = 'production';
 export const BRANCH_NAME_FEATURE_SYMBOL = 'feat';
 export const BRANCH_NAME_HOTFIX_SYMBOL = 'fix';
+export const BRANCH_NAME_SEPARATOR = '/';
 
 export const COMMIT_MSG_AUTO = 'auto-fit';

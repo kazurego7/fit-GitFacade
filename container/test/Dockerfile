@@ -55,7 +55,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # プロジェクトをコピー
-COPY ./ /usr/src/fit
+COPY ./project /usr/src/fit
 RUN npm install
 
 # テスト用のリポジトリをコピー

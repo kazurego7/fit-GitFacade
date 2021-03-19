@@ -1,15 +1,17 @@
-# ローカルでのテスト自動化
+# テスト用のコンテナ
 version: '3.8'
 services:
-  
-  builder:
+
+# テスト用の git リポジトリを保持する docker image の作成
+  test-builder:
     build:
       context: ../
       dockerfile: ./container/test/Dockerfile
       target: test_builder
     image: fit_test_builder
 
-  runner:
+# node によるテスト実行
+  test-runner:
     build:
       context: ../
       dockerfile: ./container/test/Dockerfile

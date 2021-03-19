@@ -1,7 +1,10 @@
-#!/bin/bash
-set -eu
+#!/bin/bash 
+set -eu # エラーおよび未定義変数があれば停止
 
-# テストデータ用の git リポジトリ作成
-echo "fuga" > hoge.txt
+echo "hogehoge" > hoge.txt
 git add -A
-git commit -m "puyo"
+git commit -m "hogeeee"
+
+echo "fugafuga" > fuga.txt
+git add -A
+git commit -m "fugaaaa"

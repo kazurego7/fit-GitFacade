@@ -13,16 +13,25 @@
 テスト実行用のステージでは、プロジェクトと前のステージのテストリポジトリがコピーされ、node によるテストコマンドが実行される
 
 ## ディレクトリ構成
+`tree -a -F -L 3 --dirsfirst -I 'project|.git'`
 ```bash
-container
-├── test
-│   ├── builder         # テストリポジトリのビルドスクリプト群
-│   │   └── test1.sh
-│   ├── Dockerfile
-│   ├── README.md
-│   └── executor.sh     # テストリポジトリのビルド実行スクリプト
-├── .env
-└── docker-compose.yml
+fit
+├── .github/                    # github 用のワークフローディレクトリ
+│   └── workflows/
+│       └── deploy.yml*
+├── test/                       # テスト用ディレクトリ
+│   ├── builder/                # テストリポジトリの生成スクリプト群
+│   │   ├── 1_swing.sh*
+│   │   └── hogehoge.sh*
+│   ├── tools/
+│   │   └── git-subcommand/
+│   ├── .dockerignore*
+│   └── executor.sh*            # テストリポジトリの生成を実行するスクリプト
+├── project                     # fit プロジェクト本体
+├── .env*
+├── Dockerfile*
+├── README.md*
+└── docker-compose.yml*         # テスト用のコンテナサービスを含む
 ```
 
 ## テストまでの流れ

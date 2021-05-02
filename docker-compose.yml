@@ -5,16 +5,16 @@ services:
 # テスト用の git リポジトリを保持する docker image の作成
   test-builder:
     build:
-      context: ../
-      dockerfile: ./container/test/Dockerfile
+      context: ./test
+      dockerfile: ../Dockerfile
       target: test_builder
     image: fit_test_builder
 
 # node によるテスト実行
   test-runner:
     build:
-      context: ../
-      dockerfile: ./container/test/Dockerfile
+      context: ./project
+      dockerfile: ../Dockerfile
       target: test_runner
     image: fit_test_runner
     init: true

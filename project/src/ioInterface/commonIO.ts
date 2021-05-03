@@ -2,7 +2,7 @@
  * 入出力のための共通インターフェース
  */
 export interface ICommonIO {
-    input(description: string): Promise<string | undefined>
+    input(description: string, validator?: (text: string) => string): Promise<string | undefined>
     select<T>(choices: SelectItem<T>[]): Promise<T | undefined>
     message<T>(message: string, choices: MessageItem<T>[]): Promise<T>
     output(text: string): Promise<void>

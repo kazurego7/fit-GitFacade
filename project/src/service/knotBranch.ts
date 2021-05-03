@@ -68,14 +68,13 @@ export const validBranchName = async (git: SimpleGit, branchSymbol: string, bran
 /**
  * 分岐もとに空の commit のあるブランチを作成する 
  * @param git 
- * @param newBranchName 既に存在するブランチ名と重複する場合はエラー
+ * @param fromBranchName 分岐元のブランチ名
+ * @param newBranchName 新しく作成するブランチ名(既に存在するブランチ名と重複する場合はエラー)
  */
-export const create = async (git: SimpleGit, newBranchName: string) => {
+export const create = async (git: SimpleGit, fromBranchName: string, newBranchName: string) => {
     const commitId = await common.getCommitId(git);
     await bindStash.push(git, bindStash.BindType.swing, commitId);
-    await git.checkout([config.BRANCH_NAME_MAIN]);
-    await git.branch([newBranchName]);
-    await git.checkout([newBranchName]);
+    await git.checkout([fromBranchName, '-b', newBranchName]);
     try {
         const commitMassage = `${config.COMMIT_MSG_AUTO}: knot commit.`;
         await git.commit(commitMassage, ['--allow-empty']);

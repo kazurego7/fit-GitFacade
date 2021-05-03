@@ -38,4 +38,12 @@ export class VSCodeIO implements ICommonIO {
         await vscode.window.showInformationMessage(text);
         return;
     }
+    async outputWarn(text: string): Promise<void> {
+        await vscode.window.showWarningMessage(text);
+        return;
+    }
+    async outputError(text: string): Promise<void> {
+        await vscode.window.showErrorMessage(text);
+        return;
+    }
 }

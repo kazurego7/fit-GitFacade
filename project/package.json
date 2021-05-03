@@ -50,6 +50,11 @@
 				"command": "fit.follow",
 				"title": "follow: リモートのメインブランチに追従する",
 				"category": "Fit"
+			},
+			{
+				"command": "fit.avoid",
+				"title": "avoid: 発生した競合をリセットする",
+				"category": "Fit"
 			}
 		]
 	},

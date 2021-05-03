@@ -37,16 +37,6 @@
 				"category": "Fit"
 			},
 			{
-				"command": "fit.refeat",
-				"title": "refeat: 作業状態を新しいfeatureブランチに移し替える",
-				"category": "Fit"
-			},
-			{
-				"command": "fit.refix",
-				"title": "refix: 作業状態を新しいhotfixブランチに移し替える",
-				"category": "Fit"
-			},
-			{
 				"command": "fit.follow",
 				"title": "follow: リモートのメインブランチに追従する",
 				"category": "Fit"

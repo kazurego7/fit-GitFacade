@@ -15,7 +15,13 @@ on:
         # Input has to be provided for the workflow to run
         required: true
 
+# デフォルトの設定
+defaults:
+  run:
+    shell: bash
+    working-directory: project
 
+# ジョブの設定
 jobs:
   # npm version での更新、vsix のデプロイ、を行う
   deploy:

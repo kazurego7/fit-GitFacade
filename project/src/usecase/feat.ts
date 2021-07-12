@@ -32,7 +32,7 @@ export const feat = async (io: ICommonIO, git: SimpleGit) => {
                     io.output(`ブランチ名 "${newBranchName}": 不正なブランチ名です。`);
                     break;
                 default:
-                    await knotBranch.create(git, newBranchName);
+                    await knotBranch.create(git, `${config.REMOTE_DEFAULT}/${config.BRANCH_NAME_MAIN}`, newBranchName);
                     io.output(`ブランチ名 "${newBranchName}": ブランチが作成されました。`);
                     return;
             }

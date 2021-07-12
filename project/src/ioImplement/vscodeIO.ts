@@ -3,8 +3,8 @@ import * as vscode from 'vscode';
 import { assert } from "console";
 
 export class VSCodeIO implements ICommonIO {
-    async input(description: string): Promise<string | undefined> {
-        return await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: description });
+    async input(description: string, validator?: (text: string) => string): Promise<string | undefined> {
+        return await vscode.window.showInputBox({ ignoreFocusOut: true, prompt: description, validateInput: validator });
     }
     async select<T>(choices: SelectItem<T>[]): Promise<T | undefined> {
         assert(choices.length > 0);
@@ -36,6 +36,14 @@ export class VSCodeIO implements ICommonIO {
     }
     async output(text: string): Promise<void> {
         await vscode.window.showInformationMessage(text);
+        return;
+    }
+    async outputWarn(text: string): Promise<void> {
+        await vscode.window.showWarningMessage(text);
+        return;
+    }
+    async outputError(text: string): Promise<void> {
+        await vscode.window.showErrorMessage(text);
         return;
     }
 }

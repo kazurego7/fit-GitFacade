@@ -1,41 +1,47 @@
 import { SimpleGit, GitError } from "simple-git";
+import * as vscode from "vscode";
 import { ICommonIO } from '../ioInterface/commonIO';
 import * as service from "../service/common";
 import * as config from '../util/config';
 
 /**
- * メインブランチのpullをし、現在のブランチにmergeする
+ * リモートのメインブランチの fetch をし、現在のブランチにmergeする
  * @param io 
  * @param git 
  */
 export const follow = async (io: ICommonIO, git: SimpleGit) => {
+    // メインブランチの fetch を行う(リモートに存在しないブランチのリモート追跡ブランチの削除)
+    await git.fetch(config.REMOTE_DEFAULT, config.BRANCH_NAME_MAIN, ['--prune']);
 
-    // メインブランチの pull を行う
-    const currentBranchName = (await (git.branch())).current;
-    await service.swing(git, config.BRANCH_NAME_MAIN);
-    await git.pull(config.REMOTE_DEFAULT, config.BRANCH_NAME_MAIN);
-    await service.swing(git, currentBranchName);
+    // コミットされていない変更が存在するとき、操作をキャンセルする
+    if (await service.isChangeForWorkingtree(git) || await service.isChangeForIndex(git)) {
+        const message = `コミットされていないファイルがワーキングツリーにあるため、操作をキャンセルしました。`;
+        io.outputWarn(message);
+        vscode.commands.executeCommand('workbench.view.scm');
+        return;
+    }
 
     // 現在のブランチに merge する
-    const result = await service.merge(git);
-    switch (result) {
-        case service.MergeResult.conflict:
-            // conflict する場合は、解決するか、mergeをキャンセルするかを選択
-            const message = `マージコンフリクトが発生しました。マージコンフリクトを解決する場合は"Resolve"を選択し、マージを取りやめる場合は"キャンセル"を選択してください。`;
-            const choices = [
-                {
-                    label: "Resolve",
-                    data: "Resolve"
-                }
-            ];
-            try {
-                const choiced = await io.message(message, choices);
-                return;
-            } catch {
-                await git.merge(['--abort']);
-                return;
-            }
-        case service.MergeResult.merged:
+    try {
+        await git.merge(['--no-ff', `${config.REMOTE_DEFAULT}/${config.BRANCH_NAME_MAIN}`]);
+        // マージが完了したとき、
+        const message = `マージが完了しました。`;
+        io.output(message);
+        return;
+    } catch (e) {
+        const error = (e as GitError).message.split(':').map((str) => str.trim());
+        const errorName = error[0];
+        const isConflict = errorName === 'CONFLICTS';
+        if (isConflict) {
+            // conflict する場合は、merge conflict していることを表示
+            const message = `マージコンフリクトが発生しました。マージを中止する場合は、'Fit: avoid' を実行してください。`;
+            io.outputWarn(message);
+            // ソース管理ビューの表示
+            vscode.commands.executeCommand('workbench.view.scm');
             return;
+        } else {
+            // それ以外のエラーの場合はスルー
+            throw e;
+        }
     }
 };

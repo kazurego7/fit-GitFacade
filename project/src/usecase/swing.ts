@@ -9,17 +9,28 @@ import * as service from '../service/common';
  * @param git 
  */
 export const swing = async (io: ICommonIO, git: SimpleGit) => {
-    // スイッチするブランチを選択(現在のブランチ以外)
-    const beforBranches = await git.branch();
+    // スイッチするブランチを選択(現在のブランチおよび、メインブランチ、リリースブランチ以外)
+    const localBranchFilter = (branchName: string): boolean =>
+        branchName !== beforBranches.current &&
+        branchName !== config.BRANCH_NAME_MAIN &&
+        !branchName.startsWith(config.BRANCH_NAME_RELEASE_PREFIX + config.BRANCH_NAME_SEPARATOR);
+    const beforBranches = await git.branchLocal();
     const selectableBranches = beforBranches.all
-        .filter((branchName) => branchName !== beforBranches.current)
+        .filter(localBranchFilter)
         .map((branchName) => { return { label: branchName, data: branchName }; });
-    const selectedBranchName = await io.select(selectableBranches);
-    if (selectedBranchName === undefined) {
+    if (selectableBranches.length === 0) {
+        // スイッチできるブランチがなければキャンセル
+        const message = `スイッチできるブランチが存在しません。`;
+        io.output(message);
         return;
     } else {
-        // 現在のワークツリーとインデックスを保存して、既存のブランチへスイッチする。
-        // スイッチ先のブランチで、そのブランチで以前に保存したワークツリーとインデックスを復元する。
-        service.swing(git, selectedBranchName);
+        const selectedBranchName = await io.select(selectableBranches);
+        if (selectedBranchName === undefined) {
+            return;
+        } else {
+            // 現在のワークツリーとインデックスを保存して、既存のブランチへスイッチする。
+            // スイッチ先のブランチで、そのブランチで以前に保存したワークツリーとインデックスを復元する。
+            service.swing(git, selectedBranchName);
+        }
     }
 };

@@ -18,13 +18,8 @@ export const getCommitId = async (git: SimpleGit) => {
  * @param afterBranchName 現在のブランチと同じならば、なにもしない
  */
 export const swing = async (git: SimpleGit, afterBranchName: string) => {
-    // swingの前と後のブランチが一緒ならばなにもしない
-    const beforeBranchName = (await git.branch()).current;
-    if (beforeBranchName === afterBranchName) {
-        return;
-    }
-
     // 現在チェックアウトしているコミットに紐づくswing-stashのpush
+    const beforeBranchName = (await git.branch()).current;
     const beforeCommitId = await getCommitId(git);
     await bindStash.push(git, bindStash.BindType.swing, beforeCommitId);
 
@@ -76,7 +71,7 @@ export const isChangeForIndex = async (git: SimpleGit) => {
 export const isChangeForWorkingtree = async (git: SimpleGit) => {
     const modifed = await git.diff(['--exit-code']);
     const untracked = (await git.raw(['ls-files', '--other', '--exclude-standard', '--directory'])).trim();
-    return modifed !== "" && untracked !== "";
+    return modifed !== "" || untracked !== "";
 };
 
 /** 
@@ -99,37 +94,4 @@ export const existsConflictFile = async (git: SimpleGit) => {
     // conflict marker または whitespace error が発生しているファイルから、conflict marker のあるファイルが存在するときのみ false
     const errorLines = (await git.diff(['--check'])).split('\n');
     return errorLines.some((line) => line.search('leftover conflict marker') !== -1);
-};
-
-/**
- * merge の結果
- */
-export enum MergeResult {
-    merged,
-    conflict
-};
-
-/** 
- * no-fast-forward で merge を行う
- * @param git
- */
-export const merge = async (git: SimpleGit) => {
-    try {
-        await git.merge(['--no-ff', config.BRANCH_NAME_MAIN]);
-        return MergeResult.merged;
-    } catch (e) {
-        if (e instanceof GitError) {
-            const errorName = e.message.split(':').map((str) => str.trim())[0];
-            const isConflict = errorName === 'CONFLICTS';
-            if (!isConflict) {
-                // merge conflict 以外のエラーの場合はそのままエラー
-                throw e;
-            } else {
-                // conflict する場合は、conflict を返す
-                return MergeResult.conflict;
-            }
-        } else {
-            throw e;
-        }
-    }
 };

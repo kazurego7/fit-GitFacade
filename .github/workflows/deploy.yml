@@ -32,14 +32,13 @@ jobs:
       uses: actions/checkout@v2
     - name: setup node
       uses: actions/setup-node@v2
-    - name: setup push
-      uses: actions-js/push@v1.2
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
     - name: npm version up
       run: |
         git checkout main
-        npm version ${{ github.event.inputs.deploy }}
+        echo "FIT_VERSION=$(npm version ${{ github.event.inputs.deploy }})" >> $GITHUB_ENV
+        git add -A
+        git commit -m "${{ env.FIT_VERSION }}"
+        git tag "${{ env.FIT_VERSION }}"
         git push origin main
         git push origin --tags
     # npm global tools の PATH の追加

@@ -37,9 +37,10 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git checkout main
-        echo "FIT_VERSION=$(npm version ${{ github.event.inputs.deploy }})" >> $GITHUB_ENV
+        echo "FIT_VERSION=$(npm version ${{ github.event.inputs.deploy }} | echo)" >> $GITHUB_ENV
+        echo "${{ env.FIT_VERSION }}"
         git add -A
-        git commit -m $FIT_VERSION
+        git commit -m "${{ env.FIT_VERSION }}"
         git tag "${{ env.FIT_VERSION }}"
         git push origin main
         git push origin --tags

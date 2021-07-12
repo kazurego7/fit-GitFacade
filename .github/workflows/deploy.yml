@@ -34,6 +34,8 @@ jobs:
       uses: actions/setup-node@v2
     - name: npm version up
       run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
         git checkout main
         echo "FIT_VERSION=$(npm version ${{ github.event.inputs.deploy }})" >> $GITHUB_ENV
         git add -A
